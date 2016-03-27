@@ -4,8 +4,8 @@
 
 int main(void)
 {
-	uint8_t param[]={LED,0x00,LED_RED};
-	_INSTR_FRAME test=build_instruction_frame(WRITE,0x01 /*BROADCAST_ID*/,param,3);
+	uint8_t param[]={GOAL_VELOCITY,0x00,0xFF,0x00};
+	_INSTR_FRAME test=build_instruction_frame(WRITE,0x01 /*BROADCAST_ID*/,param,4);
 	_INSTR_FRAME ping=build_instruction_frame(PING,0x01 /*BROADCAST_ID*/,NULL,0);
 	char instr_buff[255];
 	uint8_t instr_buff_len; 
