@@ -13,7 +13,7 @@ try:
 	params=led_adrr+b'\x03'
 	crc=b'\xE0\x11'
 	to_write=header+ID+pack_len+instruct+params+crc
-	#to_write=b'\xFF\xFF\xFD\x00\x01\x07\x00\x02\x00\x00\x00\x02\x00\x00\x26\xF0'
+	to_write=b'\xFF\xFF\xFD\x00\x01\x03\x00\x01\x19\x4E'
 	ser.write(bytes(to_write))
 	while True:
 		print(ser.read(1))

@@ -4,7 +4,7 @@
 
 int main(void)
 {
-	_INSTR_FRAME test=build_instruction_frame(PING,BROADCAST_ID,NULL,0);
+	_INSTR_FRAME test=build_instruction_frame(PING,0x01 /*BROADCAST_ID*/,NULL,0);
 	printf("0x%08x\n",*((char*)(&test.HEADER+1*sizeof(char))));
 	char instr_buff[255];
 	uint8_t instr_buff_len; 

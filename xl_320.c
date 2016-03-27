@@ -23,8 +23,8 @@ void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max
 	//TODO : add byte stuffing
 	uint16_t crc=update_crc(0,(unsigned char*) instr_buff,5+instruction.LEN);
 	instruction.CRC=crc;
-	instr_buff[8+instruction.LEN]=instruction.CRC_L;
-	instr_buff[8+instruction.LEN+1]=instruction.CRC_H;
+	instr_buff[5+instruction.LEN]=instruction.CRC_L;
+	instr_buff[5+instruction.LEN+1]=instruction.CRC_H;
 
 	*instr_buff_len=7+instruction.LEN;
 	
