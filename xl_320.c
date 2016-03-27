@@ -7,7 +7,10 @@ void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max
 	{
 		return;
 	}
-	instr_buff[0]=(char) instruction.HEADER;
+	instr_buff[0]=(char) instruction.H_BYTE3;
+	instr_buff[1]=(char) instruction.H_BYTE2;
+	instr_buff[2]=(char) instruction.H_BYTE1;
+	instr_buff[3]=(char) instruction.RES;
 	instr_buff[4]=(char) instruction.ID;
 	instr_buff[5]=(char) instruction.LEN_L;
 	instr_buff[6]=(char) instruction.LEN_H;

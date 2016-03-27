@@ -5,7 +5,17 @@
 #define BROADCAST_ID 0xFE
 
 typedef struct{
-	uint32_t HEADER;
+	union {
+		struct {
+			uint32_t HEADER;
+		};
+		struct {
+			uint8_t RES;
+			uint8_t H_BYTE1;
+			uint8_t H_BYTE2;
+			uint8_t H_BYTE3;
+		};
+	};
 	uint8_t ID;
 	union {
 		struct {
