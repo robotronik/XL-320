@@ -1,5 +1,30 @@
+#include <stdint.h>
 #include "xl_320.h"
 
+void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max_len, char * instr_buff_len)
+{
+	if (max_len<7+instruction.LEN)
+	{
+		return;
+	}
+	instr_buff[0]=(char) instruction.HEADER;
+	instr_buff[4]=(char) instruction.ID;
+	instr_buff[5]=(char) instruction.LEN_L;
+	instr_buff[6]=(char) instruction.LEN_H;
+	instr_buff[7]=(char) instruction.INSTR;
+	int i;
+	for(i=0;i<instruction.LEN-3)
+	{
+		instr_buff[8+i]=instruction.PARAM[i];
+	}
+	//TODO : add byte stuffing
+	uint16_t crc=update_crc(0,instr_buff,5+instruction.LEN)
+	instruction.CRC=crc
+	instr_buff[8+instruction.LEN]=instruction.CRC_L;
+	instr_buff[8+instruction.LEN+1]=instruction.CRC_H;
+
+	return;
+}
 
 _INSTR_FRAME build_instruction_frame(_XL_320_INSTRUCTION instruction, uint8_t device_id, uint8_t * parameters, uint8_t parameters_length)
 {

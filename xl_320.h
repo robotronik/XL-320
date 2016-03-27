@@ -3,6 +3,7 @@
 
 #define XL_320_HEADER 0XFFFFFD00
 
+void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max_len, char * instr_buff_len);
 unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
 
 typedef struct{
@@ -17,7 +18,7 @@ typedef struct{
 			uint8_t LEN_H;
 		};
 	};
-	uint8_t INST;
+	uint8_t INSTR;
 	uint8_t * PARAM;
 	//uint8_t PARAM_LEN; usefull ?
 	union {
