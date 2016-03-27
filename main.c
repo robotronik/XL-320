@@ -4,8 +4,9 @@
 
 int main(void)
 {
-	_INSTR_FRAME test=build_instruction_frame(PING,0x01 /*BROADCAST_ID*/,NULL,0);
-	printf("0x%08x\n",*((char*)(&test.HEADER+1*sizeof(char))));
+	uint8_t param[]={LED,0x00,0x02};
+	_INSTR_FRAME test=build_instruction_frame(WRITE,0x01 /*BROADCAST_ID*/,param,3);
+	_INSTR_FRAME ping=build_instruction_frame(PING,0x01 /*BROADCAST_ID*/,NULL,0);
 	char instr_buff[255];
 	uint8_t instr_buff_len; 
 	get_instruction_string(test, instr_buff,255, &instr_buff_len);
