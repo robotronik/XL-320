@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "xl_320.h"
 
-void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max_len, char * instr_buff_len)
+void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max_len, uint8_t * instr_buff_len)
 {
 	if (max_len<7+instruction.LEN)
 	{
@@ -23,6 +23,8 @@ void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max
 	instr_buff[8+instruction.LEN]=instruction.CRC_L;
 	instr_buff[8+instruction.LEN+1]=instruction.CRC_H;
 
+	*instr_buff_len=7+instruction.LEN;
+	
 	return;
 }
 
