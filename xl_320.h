@@ -1,6 +1,8 @@
 #ifndef XL_320_H
 #define	XL_320_H
 
+#define XL_320_HEADER 0XFFFFFD00
+
 unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
 
 typedef struct{
@@ -17,6 +19,7 @@ typedef struct{
 	};
 	uint8_t INST;
 	uint8_t * PARAM;
+	//uint8_t PARAM_LEN; usefull ?
 	union {
 		struct {
 			uint16_t CRC;

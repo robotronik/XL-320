@@ -1,4 +1,16 @@
+#include "xl_320.h"
 
+
+_INSTR_FRAME build_instruction_frame(_XL_320_INSTRUCTION instruction, uint8_t device_id, uint8_t * parameters, uint8_t parameters_length)
+{
+	_INSTR_FRAME frame;
+	frame.HEADER=XL_320_HEADER;
+	frame.ID=device_id;
+	frame.INSTR= (uint8_t) instruction
+	frame.LEN=parameters_length+3;
+	frame.PARAM=parameters;
+	return frame;
+}
 
 //code from : http://support.robotis.com/en/product/dynamixel_pro/communication/crc.htm
 unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size)
