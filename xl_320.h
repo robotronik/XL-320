@@ -3,9 +3,6 @@
 
 #define XL_320_HEADER 0XFFFFFD00
 
-void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max_len, char * instr_buff_len);
-unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
-
 typedef struct{
 	uint32_t HEADER;
 	uint8_t ID;
@@ -82,5 +79,9 @@ typedef enum {
 	BULK_READ=0x92,
 	BULK_WRITE=0x93,
 } _XL_320_INSTRUCTION;
+
+
+void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max_len, uint8_t * instr_buff_len);
+unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
 
 #endif	/* XL_320 */

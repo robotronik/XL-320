@@ -13,13 +13,13 @@ void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max
 	instr_buff[6]=(char) instruction.LEN_H;
 	instr_buff[7]=(char) instruction.INSTR;
 	int i;
-	for(i=0;i<instruction.LEN-3)
+	for(i=0;i<instruction.LEN-3;i++)
 	{
 		instr_buff[8+i]=instruction.PARAM[i];
 	}
 	//TODO : add byte stuffing
-	uint16_t crc=update_crc(0,instr_buff,5+instruction.LEN)
-	instruction.CRC=crc
+	uint16_t crc=update_crc(0,(unsigned char*) instr_buff,5+instruction.LEN);
+	instruction.CRC=crc;
 	instr_buff[8+instruction.LEN]=instruction.CRC_L;
 	instr_buff[8+instruction.LEN+1]=instruction.CRC_H;
 
@@ -33,7 +33,7 @@ _INSTR_FRAME build_instruction_frame(_XL_320_INSTRUCTION instruction, uint8_t de
 	_INSTR_FRAME frame;
 	frame.HEADER=XL_320_HEADER;
 	frame.ID=device_id;
-	frame.INSTR= (uint8_t) instruction
+	frame.INSTR= (uint8_t) instruction;
 	frame.LEN=parameters_length+3;
 	frame.PARAM=parameters;
 	return frame;
