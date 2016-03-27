@@ -3,6 +3,31 @@
 
 unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
 
+typedef struct{
+	uint32_t HEADER;
+	uint8_t ID;
+	union {
+		struct {
+			uint16_t LEN;
+		};
+		struct {
+			uint8_t LEN_L;
+			uint8_t LEN_H;
+		};
+	};
+	uint8_t INST;
+	uint8_t * PARAM;
+	union {
+		struct {
+			uint16_t CRC;
+		};
+		struct {
+			uint8_t CRC_L;
+			uint8_t CRC_H;
+		};
+	};
+} _INSTR_FRAME;
+
 //http://support.robotis.com/en/product/dynamixel/xl-320/xl-320.htm
 typedef enum {
 	MODEL_NUMBER=0x00,
