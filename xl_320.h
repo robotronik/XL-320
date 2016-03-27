@@ -42,13 +42,13 @@ typedef struct{
 
 //http://support.robotis.com/en/product/dynamixel/xl-320/xl-320.htm
 typedef enum {
-	MODEL_NUMBER=00,
-	FIRMWARE_VERSION=02,
-	ID=03,
-	BAUDRATE=04,
-	RETURN_DELAY_TIME=05,
-	CW_ANGLE_LIMIT=06,
-	CCW_ANGLE_LIMIT=08,
+	MODEL_NUMBER=0,
+	FIRMWARE_VERSION=2,
+	ID=3,
+	BAUDRATE=4,
+	RETURN_DELAY_TIME=5,
+	CW_ANGLE_LIMIT=6,
+	CCW_ANGLE_LIMIT=8,
 	CONTROL_MODE=11,
 	LIMIT_TEMPERATURE=12,
 	LOWER_LIMIT_VOLTAGE=13,
@@ -74,6 +74,17 @@ typedef enum {
 	HDW_ERROR_STATUS=50,
 	PUNCH=51,
 } _XL_320_ADRR;
+
+//http://support.robotis.com/en/product/dynamixel/xl-320/xl-320.htm#Actuator_Address_19
+typedef enum {
+	LED_RED=0b001,
+	LED_GREEN=0b010,
+	LED_YELLOW=0b011,
+	LED_BLUE=0b100,
+	LED_PINK=0b101,
+	LED_BLUE_GREEN=0b110,
+	LED_WHITE=0b111,
+} _LED_COLOR;
 
 //http://support.robotis.com/en/product/dynamixel_pro/communication/instruction_status_packet.htm
 typedef enum {

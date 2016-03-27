@@ -4,7 +4,7 @@
 
 int main(void)
 {
-	uint8_t param[]={LED,0x00,0x02};
+	uint8_t param[]={LED,0x00,LED_RED};
 	_INSTR_FRAME test=build_instruction_frame(WRITE,0x01 /*BROADCAST_ID*/,param,3);
 	_INSTR_FRAME ping=build_instruction_frame(PING,0x01 /*BROADCAST_ID*/,NULL,0);
 	char instr_buff[255];
