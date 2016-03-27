@@ -13,8 +13,9 @@ try:
 	params=led_adrr+b'\x03'
 	crc=b'\xE0\x11'
 	to_write=header+ID+pack_len+instruct+params+crc
-	to_write=b'\xFF\xFF\xFD\x00\x01\x03\x00\x01\x19\x4E'
-	ser.write(bytes(to_write))
+	to_write_ping=b'\xFF\xFF\xFD\x00\x01\x03\x00\x01\x19\x4E'
+	to_write_led=b'\xFF\xFF\xFD\x00\x01\x06\x00\x03\x19\x00\x02\x25\x62'
+	ser.write(bytes(to_write_led))
 	while True:
 		print(ser.read(1))
 except:
