@@ -4,13 +4,8 @@
 
 int main(void)
 {
-	_INSTR_FRAME test;
-	test.HEADER=XL_320_HEADER;
+	_INSTR_FRAME test=build_instruction_frame(PING,BROADCAST_ID,NULL,0);
 	printf("0x%08x\n",*((char*)(&test.HEADER+1*sizeof(char))));
-	test.ID=BROADCAST_ID;
-	test.INSTR=PING;
-	test.LEN=3;
-	//test.LEN=0x0201;
 	char instr_buff[255];
 	uint8_t instr_buff_len; 
 	get_instruction_string(test, instr_buff,255, &instr_buff_len);
