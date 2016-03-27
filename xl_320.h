@@ -1,7 +1,8 @@
 #ifndef XL_320_H
 #define	XL_320_H
 
-#define XL_320_HEADER 0XFFFFFD00
+#define XL_320_HEADER 0xFFFFFD00
+#define BROADCAST_ID 0xFE
 
 typedef struct{
 	uint32_t HEADER;
