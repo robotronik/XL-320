@@ -10,8 +10,8 @@ try:
 	pack_len=b'\x06\x00'
 	instruct=b'\x03'
 	led_adrr=b'\x25\x00'
-	params=led_adrr+b'\x02'
-	crc=b'\xD5\x97'
+	params=led_adrr+b'\x03'
+	crc=b'\xE0\x11'
 	to_write=header+ID+pack_len+instruct+params+crc
 	#to_write=b'\xFF\xFF\xFD\x00\x01\x07\x00\x02\x00\x00\x00\x02\x00\x00\x26\xF0'
 	ser.write(bytes(to_write))

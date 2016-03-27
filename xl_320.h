@@ -1,6 +1,8 @@
 #ifndef XL_320_H
 #define	XL_320_H
 
+unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
+
 //http://support.robotis.com/en/product/dynamixel/xl-320/xl-320.htm
 typedef enum {
 	MODEL_NUMBER=0x00,
@@ -34,7 +36,7 @@ typedef enum {
 	MOVING=0x49,
 	HDW_ERROR_STATUS=0x50,
 	PUNCH=0x51,
-} _XL_320_ADRR
+} _XL_320_ADRR;
 
 //http://support.robotis.com/en/product/dynamixel_pro/communication/instruction_status_packet.htm
 typedef enum {
@@ -50,6 +52,6 @@ typedef enum {
 	SYNC_WRITE=0x83,
 	BULK_READ=0x92,
 	BULK_WRITE=0x93,
-} _XL_320_INSTRUCTION
+} _XL_320_INSTRUCTION;
 
 #endif	/* XL_320 */
