@@ -119,6 +119,7 @@ typedef enum {
 	BULK_WRITE=0x93,
 } _XL_320_INSTRUCTION;
 
+void set_data_group(_XL_320_GROUP group, _XL_320_FIELD data, uint16_t value, uint8_t now);
 void set_data_servo(_XL_320 servo, _XL_320_FIELD data, uint16_t value, uint8_t now);
 void set_led_color_servo(_XL_320 servo, _LED_COLOR color);
 void set_control_mode_servo(_XL_320 servo, _CONTROL_MODE mode);
