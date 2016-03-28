@@ -10,44 +10,44 @@ void set_led_color_servo(_XL_320 servo, _LED_COLOR color)
 void set_control_mode_servo(_XL_320 servo, _CONTROL_MODE mode)
 {
 	uint8_t param[]={CONTROL_MODE, 0x00, mode};
-	send_instruction_frame(servo.ID,servo.GROUP,param,3);
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,3);
 }
 
 void set_speed_servo(_XL_320 servo, uint16_t speed)
 {
 	uint8_t param[]={GOAL_VELOCITY,0x00, (uint8_t) speed,(uint8_t) (speed>>8)};
-	send_instruction_frame(servo.ID,servo.GROUP,param,4);
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,4);
 }
 
 void set_angle_servo(_XL_320 servo, uint16_t angle)
 {
 	uint8_t param[]={GOAL_POSITION,0x00, (uint8_t) angle,(uint8_t) (angle>>8)};
-	send_instruction_frame(servo.ID,servo.GROUP,param,4);
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,4);
 }
 
 void set_torque_servo(_XL_320 servo, uint16_t angle)
 {
 	uint8_t param[]={GOAL_TORQUE,0x00, (uint8_t) angle,(uint8_t) (angle>>8)};
-	send_instruction_frame(servo.ID,servo.GROUP,param,4);
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,4);
 }
 
 void set_ID_servo(_XL_320 * servo, uint8_t new_ID)
 {
 	uint8_t param[]={ID, 0x00, new_ID};
-	send_instruction_frame(*servo,WRITE,param,3);
+	send_instruction_frame(servo->ID,servo->GROUP,WRITE,param,3);
 	servo->ID=new_ID;
 }
 
 void enable_power_servo(_XL_320 servo)
 {
 	uint8_t param[]={TORQUE_ENABLE, 0x00, 1};
-	send_instruction_frame(servo.ID,servo.GROUP,param,3);
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,3);
 }
 
 void disable_power_servo(_XL_320 servo)
 {
 	uint8_t param[]={TORQUE_ENABLE, 0x00, 0};
-	send_instruction_frame(servo.ID,servo.GROUP,param,3);
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,3);
 }
 
 void attach_servo(_XL_320 * servo, _XL_320_GROUP * group)
