@@ -73,6 +73,28 @@ static const uint8_t  field_len[NBR_FIELD]= {
 void send_instruction_frame(uint8_t target_ID, _XL_320_GROUP * group, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len);
 unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
 
+_XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t))
+{
+	_XL_320_GROUP group;
+	group.SEND_FUNC=send_function;
+	group.LEN=0;
+	return group;
+}
+
+_XL_320 create_servo(uint8_t ID, _XL_320_GROUP * root_group)
+{
+	_XL_320 servo;
+	servo.ID=ID;
+	servo.GROUP=root_group;
+	add_servo_to_group(servo,root_group);
+	return servo;
+}
+
+void add_servo_to_group(_XL_320 servo, _XL_320_GROUP * group)
+{
+	group->ID_LIST[group->LEN]=servo.ID;
+	group->LEN+=1;
+}
 
 void set_data_group(_XL_320_GROUP group, _XL_320_FIELD data, uint16_t value, uint8_t now)
 {
@@ -149,29 +171,6 @@ void enable_power_servo(_XL_320 servo, uint8_t now)
 void disable_power_servo(_XL_320 servo, uint8_t now)
 {
 	set_data_servo(servo,TORQUE_ENABLE,0,now);
-}
-
-void add_servo_to_group(_XL_320 servo, _XL_320_GROUP * group)
-{
-	group->ID_LIST[group->LEN]=servo.ID;
-	group->LEN+=1;
-}
-
-_XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t))
-{
-	_XL_320_GROUP group;
-	group.SEND_FUNC=send_function;
-	group.LEN=0;
-	return group;
-}
-
-_XL_320 create_servo(uint8_t ID, _XL_320_GROUP * root_group)
-{
-	_XL_320 servo;
-	servo.ID=ID;
-	servo.GROUP=root_group;
-	add_servo_to_group(servo,root_group);
-	return servo;
 }
 
 void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max_len, uint8_t * instr_buff_len)
