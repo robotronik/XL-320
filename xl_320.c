@@ -1,6 +1,30 @@
 #include <stdint.h>
 #include "xl_320.h"
 
+
+void attach_servo(_XL_320 * servo, _XL_320_GROUP * group)
+{
+	servo->GROUP=*group; //does it have to be done here ?
+	group->ID_LIST[group->LEN]=servo->ID;
+	group->LEN+=1;
+}
+
+_XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t))
+{
+	_XL_320_GROUP group;
+	group.SEND_FUNC=send_function;
+	group.LEN=0;
+	return group;
+}
+
+_XL_320 create_servo(uint8_t ID, _XL_320_GROUP * group)
+{
+	_XL_320 servo;
+	servo.ID=ID;
+	attach_servo(&servo,group);
+	return servo;
+}
+
 void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max_len, uint8_t * instr_buff_len)
 {
 	if (max_len<7+instruction.LEN)

@@ -4,6 +4,17 @@
 #define XL_320_HEADER 0xFFFFFD00
 #define BROADCAST_ID 0xFE
 
+typedef struct {
+	void (*SEND_FUNC)(char *,uint8_t);
+	uint8_t ID_LIST[253];
+	uint8_t LEN;
+} _XL_320_GROUP;
+
+typedef struct {
+	_XL_320_GROUP GROUP;
+	uint8_t ID;
+} _XL_320;
+
 typedef struct{
 	union {
 		struct {
@@ -103,6 +114,8 @@ typedef enum {
 } _XL_320_INSTRUCTION;
 
 
+_XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t));
+_XL_320 create_servo(uint8_t ID, _XL_320_GROUP * group);
 void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max_len, uint8_t * instr_buff_len);
 _INSTR_FRAME build_instruction_frame(_XL_320_INSTRUCTION instruction, uint8_t device_id, uint8_t * parameters, uint8_t parameters_length);
 unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
