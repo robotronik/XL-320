@@ -97,6 +97,11 @@ typedef enum {
 	LED_WHITE=0b111,
 } _LED_COLOR;
 
+typedef enum {
+	WHEEL=1,
+	JOIN=2,
+} _CONTROL_MODE;
+
 //http://support.robotis.com/en/product/dynamixel_pro/communication/instruction_status_packet.htm
 typedef enum {
 	PING=0x01,
@@ -114,6 +119,7 @@ typedef enum {
 } _XL_320_INSTRUCTION;
 
 void set_led_color_servo(_XL_320 servo, _LED_COLOR color);
+void set_control_mode_servo(_XL_320 servo, _CONTROL_MODE mode);
 _XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t));
 _XL_320 create_servo(uint8_t ID, _XL_320_GROUP * group);
 void send_instruction_frame(_XL_320 servo, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len);

@@ -7,6 +7,12 @@ void set_led_color_servo(_XL_320 servo, _LED_COLOR color)
 	send_instruction_frame(servo,WRITE,param,3);
 }
 
+void set_control_mode_servo(_XL_320 servo, _CONTROL_MODE mode)
+{
+	uint8_t param[]={CONTROL_MODE, 0x00, mode};
+	send_instruction_frame(servo,WRITE,param,3);
+}
+
 void attach_servo(_XL_320 * servo, _XL_320_GROUP * group)
 {
 	servo->GROUP=*group; //does it have to be done here ?
