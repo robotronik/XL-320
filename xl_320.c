@@ -64,12 +64,12 @@ _XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t))
 	return group;
 }
 
-_XL_320 create_servo(uint8_t ID, _XL_320_GROUP * group)
+_XL_320 create_servo(uint8_t ID, _XL_320_GROUP * root_group)
 {
 	_XL_320 servo;
 	servo.ID=ID;
-	servo.GROUP=group;
-	add_servo_to_group(servo,group);
+	servo.GROUP=root_group;
+	add_servo_to_group(servo,root_group);
 	return servo;
 }
 

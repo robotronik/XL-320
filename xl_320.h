@@ -127,7 +127,7 @@ void set_ID_servo(_XL_320 * servo, uint8_t new_ID);
 void enable_power_servo(_XL_320 servo);
 void disable_power_servo(_XL_320 servo);
 _XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t));
-_XL_320 create_servo(uint8_t ID, _XL_320_GROUP * group);
+_XL_320 create_servo(uint8_t ID, _XL_320_GROUP * root_group);
 void send_instruction_frame(uint8_t target_ID, _XL_320_GROUP * group, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len);
 unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
 
