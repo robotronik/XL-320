@@ -4,31 +4,31 @@
 void set_led_color_servo(_XL_320 servo, _LED_COLOR color)
 {
 	uint8_t param[]={LED, 0x00, color};
-	send_instruction_frame(servo,WRITE,param,3);
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,3);
 }
 
 void set_control_mode_servo(_XL_320 servo, _CONTROL_MODE mode)
 {
 	uint8_t param[]={CONTROL_MODE, 0x00, mode};
-	send_instruction_frame(servo,WRITE,param,3);
+	send_instruction_frame(servo.ID,servo.GROUP,param,3);
 }
 
 void set_speed_servo(_XL_320 servo, uint16_t speed)
 {
 	uint8_t param[]={GOAL_VELOCITY,0x00, (uint8_t) speed,(uint8_t) (speed>>8)};
-	send_instruction_frame(servo,WRITE,param,4);
+	send_instruction_frame(servo.ID,servo.GROUP,param,4);
 }
 
 void set_angle_servo(_XL_320 servo, uint16_t angle)
 {
 	uint8_t param[]={GOAL_POSITION,0x00, (uint8_t) angle,(uint8_t) (angle>>8)};
-	send_instruction_frame(servo,WRITE,param,4);
+	send_instruction_frame(servo.ID,servo.GROUP,param,4);
 }
 
 void set_torque_servo(_XL_320 servo, uint16_t angle)
 {
 	uint8_t param[]={GOAL_TORQUE,0x00, (uint8_t) angle,(uint8_t) (angle>>8)};
-	send_instruction_frame(servo,WRITE,param,4);
+	send_instruction_frame(servo.ID,servo.GROUP,param,4);
 }
 
 void set_ID_servo(_XL_320 * servo, uint8_t new_ID)
@@ -41,13 +41,13 @@ void set_ID_servo(_XL_320 * servo, uint8_t new_ID)
 void enable_power_servo(_XL_320 servo)
 {
 	uint8_t param[]={TORQUE_ENABLE, 0x00, 1};
-	send_instruction_frame(servo,WRITE,param,3);
+	send_instruction_frame(servo.ID,servo.GROUP,param,3);
 }
 
 void disable_power_servo(_XL_320 servo)
 {
 	uint8_t param[]={TORQUE_ENABLE, 0x00, 0};
-	send_instruction_frame(servo,WRITE,param,3);
+	send_instruction_frame(servo.ID,servo.GROUP,param,3);
 }
 
 void attach_servo(_XL_320 * servo, _XL_320_GROUP * group)
@@ -114,14 +114,14 @@ _INSTR_FRAME build_instruction_frame(_XL_320_INSTRUCTION instruction, uint8_t de
 	return frame;
 }
 
-void send_instruction_frame(_XL_320 servo, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len)
+void send_instruction_frame(uint8_t target_ID, _XL_320_GROUP group, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len)
 {
-	_INSTR_FRAME frame=build_instruction_frame(instr, servo.ID, param, param_len);
+	_INSTR_FRAME frame=build_instruction_frame(instr, target_ID, param, param_len);
 	uint8_t max_len=param_len+10+(param_len+2)/3;
 	char buff[max_len];
 	uint8_t final_len;
 	get_instruction_string(frame,buff,max_len,&final_len);
-	servo.GROUP.SEND_FUNC(buff,final_len);
+	group.SEND_FUNC(buff,final_len);
 }
 
 //code from : http://support.robotis.com/en/product/dynamixel_pro/communication/crc.htm
