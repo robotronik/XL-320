@@ -19,6 +19,12 @@ void set_speed_servo(_XL_320 servo, uint16_t speed)
 	send_instruction_frame(servo,WRITE,param,4);
 }
 
+void set_angle_servo(_XL_320 servo, uint16_t angle)
+{
+	uint8_t param[]={GOAL_POSITION,0x00, (uint8_t) angle,(uint8_t) (angle>>8)};
+	send_instruction_frame(servo,WRITE,param,4);
+}
+
 void attach_servo(_XL_320 * servo, _XL_320_GROUP * group)
 {
 	servo->GROUP=*group; //does it have to be done here ?
