@@ -123,6 +123,8 @@ void set_control_mode_servo(_XL_320 servo, _CONTROL_MODE mode);
 void set_speed_servo(_XL_320 servo, uint16_t speed);
 void set_angle_servo(_XL_320 servo, uint16_t angle);
 void set_torque_servo(_XL_320 servo, uint16_t angle);
+void enable_power_servo(_XL_320 servo);
+void disable_power_servo(_XL_320 servo);
 _XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t));
 _XL_320 create_servo(uint8_t ID, _XL_320_GROUP * group);
 void send_instruction_frame(_XL_320 servo, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len);

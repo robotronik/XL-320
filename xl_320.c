@@ -31,6 +31,18 @@ void set_torque_servo(_XL_320 servo, uint16_t angle)
 	send_instruction_frame(servo,WRITE,param,4);
 }
 
+void enable_power_servo(_XL_320 servo)
+{
+	uint8_t param[]={TORQUE_ENABLE, 0x00, 1};
+	send_instruction_frame(servo,WRITE,param,3);
+}
+
+void disable_power_servo(_XL_320 servo)
+{
+	uint8_t param[]={TORQUE_ENABLE, 0x00, 0};
+	send_instruction_frame(servo,WRITE,param,3);
+}
+
 void attach_servo(_XL_320 * servo, _XL_320_GROUP * group)
 {
 	servo->GROUP=*group; //does it have to be done here ?

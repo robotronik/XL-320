@@ -17,9 +17,10 @@ int main(void)
 	_XL_320_GROUP my_servo_grp = create_servo_grp(&fake_send);
 	_XL_320 my_servo=create_servo(0x01,&my_servo_grp);
 	//set_led_color_servo(my_servo,LED_BLUE);
-	//set_control_mode_servo(my_servo,JOIN);
-	//set_speed_servo(my_servo,0);
-	set_angle_servo(my_servo,422);
+	//set_control_mode_servo(my_servo,WHEEL);
+	//set_speed_servo(my_servo,512);
+	//set_angle_servo(my_servo,422);
+	disable_power_servo(my_servo);
 	//set_torque_servo(my_servo,422);
 	//send_instruction_frame(my_servo,WRITE,param,4);
 	//send_instruction_frame(my_servo,PING,NULL,0);
