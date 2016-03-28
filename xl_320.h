@@ -123,7 +123,8 @@ typedef enum {
 _XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t));
 //used to create a servo in a root group
 _XL_320 create_servo(uint8_t ID, _XL_320_GROUP * root_group);
-
+//used to add a servo to a custom subgroup
+void add_servo_to_group(_XL_320 servo, _XL_320_GROUP * group);
 
 
 //used for sending data to a entire group
