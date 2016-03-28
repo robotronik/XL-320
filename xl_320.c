@@ -70,10 +70,17 @@ static const uint8_t  field_len[NBR_FIELD]= {
 	[PUNCH]=2,
 };
 
-void set_data_servo(_XL_320 servo, _XL_320_FIELD data, uint16_t value)
+void set_data_servo(_XL_320 servo, _XL_320_FIELD data, uint16_t value, uint8_t now)
 {
 	uint8_t param[]={field_addr[data],0x00, (uint8_t) value,(uint8_t) (value>>8)};
-	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,field_len[data]+2);
+	if now
+	{
+		send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,field_len[data]+2);
+	}
+	else
+	{
+		send_instruction_frame(servo.ID,servo.GROUP,REG_WRITE,param,field_len[data]+2);
+	}
 }
 
 /*
