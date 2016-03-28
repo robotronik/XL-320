@@ -70,7 +70,13 @@ static const uint8_t  field_len[NBR_FIELD]= {
 	[PUNCH]=2,
 };
 
+void set_data_servo(_XL_320 servo, _XL_320_FIELD data, uint16_t value)
+{
+	uint8_t param[]={field_addr[data],0x00, (uint8_t) value,(uint8_t) (value>>8)};
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,field_len[data]+2);
+}
 
+/*
 void set_led_color_servo(_XL_320 servo, _LED_COLOR color)
 {
 	uint8_t param[]={LED, 0x00, color};
@@ -118,7 +124,7 @@ void disable_power_servo(_XL_320 servo)
 {
 	uint8_t param[]={TORQUE_ENABLE, 0x00, 0};
 	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,3);
-}
+}*/
 
 void add_servo_to_group(_XL_320 servo, _XL_320_GROUP * group)
 {
