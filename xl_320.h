@@ -11,7 +11,7 @@ typedef struct {
 } _XL_320_GROUP;
 
 typedef struct {
-	_XL_320_GROUP GROUP;
+	_XL_320_GROUP * GROUP;
 	uint8_t ID;
 } _XL_320;
 
@@ -53,38 +53,39 @@ typedef struct{
 
 //http://support.robotis.com/en/product/dynamixel/xl-320/xl-320.htm
 typedef enum {
-	MODEL_NUMBER=0,
-	FIRMWARE_VERSION=2,
-	ID=3,
-	BAUDRATE=4,
-	RETURN_DELAY_TIME=5,
-	CW_ANGLE_LIMIT=6,
-	CCW_ANGLE_LIMIT=8,
-	CONTROL_MODE=11,
-	LIMIT_TEMPERATURE=12,
-	LOWER_LIMIT_VOLTAGE=13,
-	UPPER_LIMIT_VOLTAGE=14,
-	MAX_TORQUE=15,
-	RETURN_LEVEL=17,
-	ALARM_SHUTDOWN=18,
-	TORQUE_ENABLE=24,
-	LED=25,
-	D_GAIN=27,
-	I_GAIN=28,
-	P_GAIN=29,
-	GOAL_POSITION=30,
-	GOAL_VELOCITY=32,
-	GOAL_TORQUE=35,
-	PRESENT_POSITION=37,
-	PRESENT_SPEED=39,
-	PRESENT_LOAD=41,
-	PRESENT_VOLTAGE=45,
-	PRESENT_TEMPERATURE=46,
-	REGISTERED_INSTRUCTION=47,
-	MOVING=49,
-	HDW_ERROR_STATUS=50,
-	PUNCH=51,
-} _XL_320_ADRR;
+	MODEL_NUMBER,
+	FIRMWARE_VERSION,
+	ID,
+	BAUDRATE,
+	RETURN_DELAY_TIME,
+	CW_ANGLE_LIMIT,
+	CCW_ANGLE_LIMIT,
+	CONTROL_MODE,
+	LIMIT_TEMPERATURE,
+	LOWER_LIMIT_VOLTAGE,
+	UPPER_LIMIT_VOLTAGE,
+	MAX_TORQUE,
+	RETURN_LEVEL,
+	ALARM_SHUTDOWN,
+	TORQUE_ENABLE,
+	LED,
+	D_GAIN,
+	I_GAIN,
+	P_GAIN,
+	GOAL_POSITION,
+	GOAL_VELOCITY,
+	GOAL_TORQUE,
+	PRESENT_POSITION,
+	PRESENT_SPEED,
+	PRESENT_LOAD,
+	PRESENT_VOLTAGE,
+	PRESENT_TEMPERATURE,
+	REGISTERED_INSTRUCTION,
+	MOVING,
+	HDW_ERROR_STATUS,
+	PUNCH,
+	NBR_FIELD, //just to know the total number
+} _XL_320_FIELD;
 
 //http://support.robotis.com/en/product/dynamixel/xl-320/xl-320.htm#Actuator_Address_19
 typedef enum {
@@ -118,6 +119,8 @@ typedef enum {
 	BULK_WRITE=0x93,
 } _XL_320_INSTRUCTION;
 
+void set_data_group(_XL_320_GROUP group, _XL_320_FIELD data, uint16_t value, uint8_t now);
+void set_data_servo(_XL_320 servo, _XL_320_FIELD data, uint16_t value, uint8_t now);
 void set_led_color_servo(_XL_320 servo, _LED_COLOR color);
 void set_control_mode_servo(_XL_320 servo, _CONTROL_MODE mode);
 void set_speed_servo(_XL_320 servo, uint16_t speed);
@@ -127,8 +130,8 @@ void set_ID_servo(_XL_320 * servo, uint8_t new_ID);
 void enable_power_servo(_XL_320 servo);
 void disable_power_servo(_XL_320 servo);
 _XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t));
-_XL_320 create_servo(uint8_t ID, _XL_320_GROUP * group);
-void send_instruction_frame(_XL_320 servo, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len);
+_XL_320 create_servo(uint8_t ID, _XL_320_GROUP * root_group);
+void send_instruction_frame(uint8_t target_ID, _XL_320_GROUP * group, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len);
 unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
 
 #endif	/* XL_320 */

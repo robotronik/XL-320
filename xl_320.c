@@ -1,59 +1,158 @@
 #include <stdint.h>
 #include "xl_320.h"
 
+//http://support.robotis.com/en/product/dynamixel/xl-320/xl-320.htm
+static const uint8_t  field_addr[NBR_FIELD]= {
+	[MODEL_NUMBER]=0,
+	[FIRMWARE_VERSION]=2,
+	[ID]=3,
+	[BAUDRATE]=4,
+	[RETURN_DELAY_TIME]=5,
+	[CW_ANGLE_LIMIT]=6,
+	[CCW_ANGLE_LIMIT]=8,
+	[CONTROL_MODE]=11,
+	[LIMIT_TEMPERATURE]=12,
+	[LOWER_LIMIT_VOLTAGE]=13,
+	[UPPER_LIMIT_VOLTAGE]=14,
+	[MAX_TORQUE]=15,
+	[RETURN_LEVEL]=17,
+	[ALARM_SHUTDOWN]=18,
+	[TORQUE_ENABLE]=24,
+	[LED]=25,
+	[D_GAIN]=27,
+	[I_GAIN]=28,
+	[P_GAIN]=29,
+	[GOAL_POSITION]=30,
+	[GOAL_VELOCITY]=32,
+	[GOAL_TORQUE]=35,
+	[PRESENT_POSITION]=37,
+	[PRESENT_SPEED]=39,
+	[PRESENT_LOAD]=41,
+	[PRESENT_VOLTAGE]=45,
+	[PRESENT_TEMPERATURE]=46,
+	[REGISTERED_INSTRUCTION]=47,
+	[MOVING]=49,
+	[HDW_ERROR_STATUS]=50,
+	[PUNCH]=51,
+};
+
+static const uint8_t  field_len[NBR_FIELD]= {
+	[MODEL_NUMBER]=2,
+	[FIRMWARE_VERSION]=1,
+	[ID]=1,
+	[BAUDRATE]=1,
+	[RETURN_DELAY_TIME]=1,
+	[CW_ANGLE_LIMIT]=2,
+	[CCW_ANGLE_LIMIT]=2,
+	[CONTROL_MODE]=1,
+	[LIMIT_TEMPERATURE]=1,
+	[LOWER_LIMIT_VOLTAGE]=1,
+	[UPPER_LIMIT_VOLTAGE]=1,
+	[MAX_TORQUE]=2,
+	[RETURN_LEVEL]=1,
+	[ALARM_SHUTDOWN]=1,
+	[TORQUE_ENABLE]=1,
+	[LED]=1,
+	[D_GAIN]=1,
+	[I_GAIN]=1,
+	[P_GAIN]=1,
+	[GOAL_POSITION]=2,
+	[GOAL_VELOCITY]=2,
+	[GOAL_TORQUE]=2,
+	[PRESENT_POSITION]=2,
+	[PRESENT_SPEED]=2,
+	[PRESENT_LOAD]=2,
+	[PRESENT_VOLTAGE]=1,
+	[PRESENT_TEMPERATURE]=1,
+	[REGISTERED_INSTRUCTION]=1,
+	[MOVING]=1,
+	[HDW_ERROR_STATUS]=1,
+	[PUNCH]=2,
+};
+
+void set_data_group(_XL_320_GROUP group, _XL_320_FIELD data, uint16_t value, uint8_t now)
+{
+	uint8_t param[]={field_addr[data],0x00, (uint8_t) value,(uint8_t) (value>>8)};
+	int i;
+	for(i=0;i<group.LEN;i++)
+	{
+		if(now)
+		{
+			send_instruction_frame(group.ID_LIST[i],&group,WRITE,param,field_len[data]+2);
+		}
+		else
+		{
+			send_instruction_frame(group.ID_LIST[i],&group,REG_WRITE,param,field_len[data]+2);
+		}
+	}
+}
+
+void set_data_servo(_XL_320 servo, _XL_320_FIELD data, uint16_t value, uint8_t now)
+{
+	uint8_t param[]={field_addr[data],0x00, (uint8_t) value,(uint8_t) (value>>8)};
+	if(now)
+	{
+		send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,field_len[data]+2);
+	}
+	else
+	{
+		send_instruction_frame(servo.ID,servo.GROUP,REG_WRITE,param,field_len[data]+2);
+	}
+}
+
+/*
 void set_led_color_servo(_XL_320 servo, _LED_COLOR color)
 {
 	uint8_t param[]={LED, 0x00, color};
-	send_instruction_frame(servo,WRITE,param,3);
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,3);
 }
 
 void set_control_mode_servo(_XL_320 servo, _CONTROL_MODE mode)
 {
 	uint8_t param[]={CONTROL_MODE, 0x00, mode};
-	send_instruction_frame(servo,WRITE,param,3);
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,3);
 }
 
 void set_speed_servo(_XL_320 servo, uint16_t speed)
 {
 	uint8_t param[]={GOAL_VELOCITY,0x00, (uint8_t) speed,(uint8_t) (speed>>8)};
-	send_instruction_frame(servo,WRITE,param,4);
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,4);
 }
 
 void set_angle_servo(_XL_320 servo, uint16_t angle)
 {
 	uint8_t param[]={GOAL_POSITION,0x00, (uint8_t) angle,(uint8_t) (angle>>8)};
-	send_instruction_frame(servo,WRITE,param,4);
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,4);
 }
 
 void set_torque_servo(_XL_320 servo, uint16_t angle)
 {
 	uint8_t param[]={GOAL_TORQUE,0x00, (uint8_t) angle,(uint8_t) (angle>>8)};
-	send_instruction_frame(servo,WRITE,param,4);
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,4);
 }
 
 void set_ID_servo(_XL_320 * servo, uint8_t new_ID)
 {
 	uint8_t param[]={ID, 0x00, new_ID};
-	send_instruction_frame(*servo,WRITE,param,3);
+	send_instruction_frame(servo->ID,servo->GROUP,WRITE,param,3);
 	servo->ID=new_ID;
 }
 
 void enable_power_servo(_XL_320 servo)
 {
 	uint8_t param[]={TORQUE_ENABLE, 0x00, 1};
-	send_instruction_frame(servo,WRITE,param,3);
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,3);
 }
 
 void disable_power_servo(_XL_320 servo)
 {
 	uint8_t param[]={TORQUE_ENABLE, 0x00, 0};
-	send_instruction_frame(servo,WRITE,param,3);
-}
+	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,3);
+}*/
 
-void attach_servo(_XL_320 * servo, _XL_320_GROUP * group)
+void add_servo_to_group(_XL_320 servo, _XL_320_GROUP * group)
 {
-	servo->GROUP=*group; //does it have to be done here ?
-	group->ID_LIST[group->LEN]=servo->ID;
+	group->ID_LIST[group->LEN]=servo.ID;
 	group->LEN+=1;
 }
 
@@ -65,11 +164,12 @@ _XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t))
 	return group;
 }
 
-_XL_320 create_servo(uint8_t ID, _XL_320_GROUP * group)
+_XL_320 create_servo(uint8_t ID, _XL_320_GROUP * root_group)
 {
 	_XL_320 servo;
 	servo.ID=ID;
-	attach_servo(&servo,group);
+	servo.GROUP=root_group;
+	add_servo_to_group(servo,root_group);
 	return servo;
 }
 
@@ -114,14 +214,14 @@ _INSTR_FRAME build_instruction_frame(_XL_320_INSTRUCTION instruction, uint8_t de
 	return frame;
 }
 
-void send_instruction_frame(_XL_320 servo, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len)
+void send_instruction_frame(uint8_t target_ID, _XL_320_GROUP * group, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len)
 {
-	_INSTR_FRAME frame=build_instruction_frame(instr, servo.ID, param, param_len);
+	_INSTR_FRAME frame=build_instruction_frame(instr, target_ID, param, param_len);
 	uint8_t max_len=param_len+10+(param_len+2)/3;
 	char buff[max_len];
 	uint8_t final_len;
 	get_instruction_string(frame,buff,max_len,&final_len);
-	servo.GROUP.SEND_FUNC(buff,final_len);
+	group->SEND_FUNC(buff,final_len);
 }
 
 //code from : http://support.robotis.com/en/product/dynamixel_pro/communication/crc.htm
