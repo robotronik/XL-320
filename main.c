@@ -19,7 +19,8 @@ int main(void)
 	//set_led_color_servo(my_servo,LED_BLUE);
 	//set_control_mode_servo(my_servo,JOIN);
 	//set_speed_servo(my_servo,0);
-	set_angle_servo(my_servo,0);
+	set_angle_servo(my_servo,422);
+	//set_torque_servo(my_servo,422);
 	//send_instruction_frame(my_servo,WRITE,param,4);
 	//send_instruction_frame(my_servo,PING,NULL,0);
 	return 0;
