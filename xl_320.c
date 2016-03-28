@@ -31,6 +31,13 @@ void set_torque_servo(_XL_320 servo, uint16_t angle)
 	send_instruction_frame(servo,WRITE,param,4);
 }
 
+void set_ID_servo(_XL_320 * servo, uint8_t new_ID)
+{
+	uint8_t param[]={ID, 0x00, new_ID};
+	send_instruction_frame(*servo,WRITE,param,3);
+	servo->ID=new_ID;
+}
+
 void enable_power_servo(_XL_320 servo)
 {
 	uint8_t param[]={TORQUE_ENABLE, 0x00, 1};
