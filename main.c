@@ -14,9 +14,13 @@ void fake_send(char * buff, uint8_t buff_len)
 
 int main(void)
 {
-	_XL_320_GROUP my_servo_grp = create_servo_grp(&fake_send);
-	_XL_320 my_servo=create_servo(0x02,&my_servo_grp);
-	set_led_color_servo(my_servo,LED_BLUE);
+	_XL_320_GROUP servoGroup;
+	init_servo_grp(&servoGroup, &fake_send);
+
+	_XL_320 servo;
+	init_servo(&servo,0x02, &servoGroup);
+	
+	set_led_color_servo(servo,LED_BLUE);
 	//set_control_mode_servo(my_servo,WHEEL);
 	//set_speed_servo(my_servo,512);
 	//set_angle_servo(my_servo,422);

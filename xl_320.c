@@ -57,20 +57,16 @@ void attach_servo(_XL_320 * servo, _XL_320_GROUP * group)
 	group->LEN+=1;
 }
 
-_XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t))
+void init_servo_grp(_XL_320_GROUP* group, void (*send_function)(char *,uint8_t))
 {
-	_XL_320_GROUP group;
-	group.SEND_FUNC=send_function;
-	group.LEN=0;
-	return group;
+	group->SEND_FUNC=send_function;
+	group->LEN=0;
 }
 
-_XL_320 create_servo(uint8_t ID, _XL_320_GROUP * group)
+void init_servo(_XL_320* servo, uint8_t ID, _XL_320_GROUP * group)
 {
-	_XL_320 servo;
-	servo.ID=ID;
-	attach_servo(&servo,group);
-	return servo;
+	servo->ID=ID;
+	attach_servo(servo,group);
 }
 
 void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max_len, uint8_t * instr_buff_len)
