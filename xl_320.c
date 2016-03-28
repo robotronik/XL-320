@@ -50,10 +50,9 @@ void disable_power_servo(_XL_320 servo)
 	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,3);
 }
 
-void attach_servo(_XL_320 * servo, _XL_320_GROUP * group)
+void add_servo_to_group(_XL_320 servo, _XL_320_GROUP * group)
 {
-	servo->GROUP=*group; //does it have to be done here ?
-	group->ID_LIST[group->LEN]=servo->ID;
+	group->ID_LIST[group->LEN]=servo.ID;
 	group->LEN+=1;
 }
 
@@ -69,7 +68,8 @@ _XL_320 create_servo(uint8_t ID, _XL_320_GROUP * group)
 {
 	_XL_320 servo;
 	servo.ID=ID;
-	attach_servo(&servo,group);
+	servo.GROUP=group;
+	add_servo_to_group(servo,group);
 	return servo;
 }
 
@@ -114,14 +114,14 @@ _INSTR_FRAME build_instruction_frame(_XL_320_INSTRUCTION instruction, uint8_t de
 	return frame;
 }
 
-void send_instruction_frame(uint8_t target_ID, _XL_320_GROUP group, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len)
+void send_instruction_frame(uint8_t target_ID, _XL_320_GROUP * group, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len)
 {
 	_INSTR_FRAME frame=build_instruction_frame(instr, target_ID, param, param_len);
 	uint8_t max_len=param_len+10+(param_len+2)/3;
 	char buff[max_len];
 	uint8_t final_len;
 	get_instruction_string(frame,buff,max_len,&final_len);
-	group.SEND_FUNC(buff,final_len);
+	group->SEND_FUNC(buff,final_len);
 }
 
 //code from : http://support.robotis.com/en/product/dynamixel_pro/communication/crc.htm
