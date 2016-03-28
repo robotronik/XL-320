@@ -1,6 +1,11 @@
 #include <stdint.h>
 #include "xl_320.h"
 
+void set_led_color_servo(_XL_320 servo, _LED_COLOR color)
+{
+	uint8_t param[]={LED, 0x00, color};
+	send_instruction_frame(servo,WRITE,param,3);
+}
 
 void attach_servo(_XL_320 * servo, _XL_320_GROUP * group)
 {

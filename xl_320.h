@@ -113,7 +113,7 @@ typedef enum {
 	BULK_WRITE=0x93,
 } _XL_320_INSTRUCTION;
 
-
+void set_led_color_servo(_XL_320 servo, _LED_COLOR color);
 _XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t));
 _XL_320 create_servo(uint8_t ID, _XL_320_GROUP * group);
 void send_instruction_frame(_XL_320 servo, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len);
