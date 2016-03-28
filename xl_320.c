@@ -13,6 +13,12 @@ void set_control_mode_servo(_XL_320 servo, _CONTROL_MODE mode)
 	send_instruction_frame(servo,WRITE,param,3);
 }
 
+void set_speed_servo(_XL_320 servo, uint16_t speed)
+{
+	uint8_t param[]={GOAL_VELOCITY,0x00, (uint8_t) speed,(uint8_t) (speed>>8)};
+	send_instruction_frame(servo,WRITE,param,4);
+}
+
 void attach_servo(_XL_320 * servo, _XL_320_GROUP * group)
 {
 	servo->GROUP=*group; //does it have to be done here ?
