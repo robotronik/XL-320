@@ -100,6 +100,11 @@ void set_data_servo(_XL_320 servo, _XL_320_FIELD data, uint16_t value, uint8_t n
 	}
 }
 
+void launch_previous_action(_XL_320_GROUP * group)
+{
+	send_instruction_frame(BROADCAST_ID,group,ACTION,0,0);
+}
+
 /*
 void set_led_color_servo(_XL_320 servo, _LED_COLOR color)
 {
