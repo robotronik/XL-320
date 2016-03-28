@@ -66,6 +66,16 @@ _INSTR_FRAME build_instruction_frame(_XL_320_INSTRUCTION instruction, uint8_t de
 	return frame;
 }
 
+void send_instruction_frame(_XL_320 servo, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len)
+{
+	_INSTR_FRAME frame=build_instruction_frame(instr, servo.ID, param, param_len);
+	uint8_t max_len=param_len+10+(param_len+2)/3;
+	char buff[max_len];
+	uint8_t final_len;
+	get_instruction_string(frame,buff,max_len,&final_len);
+	servo.GROUP.SEND_FUNC(buff,final_len);
+}
+
 //code from : http://support.robotis.com/en/product/dynamixel_pro/communication/crc.htm
 unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size)
 {

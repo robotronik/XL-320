@@ -116,8 +116,7 @@ typedef enum {
 
 _XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t));
 _XL_320 create_servo(uint8_t ID, _XL_320_GROUP * group);
-void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max_len, uint8_t * instr_buff_len);
-_INSTR_FRAME build_instruction_frame(_XL_320_INSTRUCTION instruction, uint8_t device_id, uint8_t * parameters, uint8_t parameters_length);
+void send_instruction_frame(_XL_320 servo, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len);
 unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
 
 #endif	/* XL_320 */
