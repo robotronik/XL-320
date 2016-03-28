@@ -89,6 +89,7 @@ typedef enum {
 
 //http://support.robotis.com/en/product/dynamixel/xl-320/xl-320.htm#Actuator_Address_19
 typedef enum {
+	LED_OFF=0,
 	LED_RED=0b001,
 	LED_GREEN=0b010,
 	LED_YELLOW=0b011,
