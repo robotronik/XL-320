@@ -70,6 +70,10 @@ static const uint8_t  field_len[NBR_FIELD]= {
 	[PUNCH]=2,
 };
 
+void send_instruction_frame(uint8_t target_ID, _XL_320_GROUP * group, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len);
+unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
+
+
 void set_data_group(_XL_320_GROUP group, _XL_320_FIELD data, uint16_t value, uint8_t now)
 {
 	uint8_t param[]={field_addr[data],0x00, (uint8_t) value,(uint8_t) (value>>8)};
@@ -105,55 +109,47 @@ void launch_previous_action(_XL_320_GROUP * group)
 	send_instruction_frame(BROADCAST_ID,group,ACTION,0,0);
 }
 
-/*
-void set_led_color_servo(_XL_320 servo, _LED_COLOR color)
+//these functions could take sense if convertion is implemented
+void set_led_color_servo(_XL_320 servo, _LED_COLOR color, uint8_t now)
 {
-	uint8_t param[]={LED, 0x00, color};
-	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,3);
+	set_data_servo(servo,LED,color,now);
 }
 
-void set_control_mode_servo(_XL_320 servo, _CONTROL_MODE mode)
+void set_control_mode_servo(_XL_320 servo, _CONTROL_MODE mode, uint8_t now)
 {
-	uint8_t param[]={CONTROL_MODE, 0x00, mode};
-	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,3);
+	set_data_servo(servo,CONTROL_MODE,mode,now);
 }
 
-void set_speed_servo(_XL_320 servo, uint16_t speed)
+void set_speed_servo(_XL_320 servo, uint16_t speed, uint8_t now)
 {
-	uint8_t param[]={GOAL_VELOCITY,0x00, (uint8_t) speed,(uint8_t) (speed>>8)};
-	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,4);
+	set_data_servo(servo,GOAL_VELOCITY,speed,now);
 }
 
-void set_angle_servo(_XL_320 servo, uint16_t angle)
+void set_angle_servo(_XL_320 servo, uint16_t angle, uint8_t now)
 {
-	uint8_t param[]={GOAL_POSITION,0x00, (uint8_t) angle,(uint8_t) (angle>>8)};
-	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,4);
+	set_data_servo(servo,GOAL_POSITION,angle,now);
 }
 
-void set_torque_servo(_XL_320 servo, uint16_t angle)
+void set_torque_servo(_XL_320 servo, uint16_t torque, uint8_t now)
 {
-	uint8_t param[]={GOAL_TORQUE,0x00, (uint8_t) angle,(uint8_t) (angle>>8)};
-	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,4);
+	set_data_servo(servo,GOAL_TORQUE,torque,now);
 }
 
 void set_ID_servo(_XL_320 * servo, uint8_t new_ID)
 {
-	uint8_t param[]={ID, 0x00, new_ID};
-	send_instruction_frame(servo->ID,servo->GROUP,WRITE,param,3);
+	set_data_servo(*servo,ID,new_ID,1);
 	servo->ID=new_ID;
 }
 
-void enable_power_servo(_XL_320 servo)
+void enable_power_servo(_XL_320 servo, uint8_t now)
 {
-	uint8_t param[]={TORQUE_ENABLE, 0x00, 1};
-	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,3);
+	set_data_servo(servo,TORQUE_ENABLE,1,now);
 }
 
-void disable_power_servo(_XL_320 servo)
+void disable_power_servo(_XL_320 servo, uint8_t now)
 {
-	uint8_t param[]={TORQUE_ENABLE, 0x00, 0};
-	send_instruction_frame(servo.ID,servo.GROUP,WRITE,param,3);
-}*/
+	set_data_servo(servo,TORQUE_ENABLE,0,now);
+}
 
 void add_servo_to_group(_XL_320 servo, _XL_320_GROUP * group)
 {
