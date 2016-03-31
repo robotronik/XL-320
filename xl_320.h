@@ -120,6 +120,7 @@ typedef enum {
 	BULK_WRITE=0x93,
 } _XL_320_INSTRUCTION;
 
+void send_instruction_frame(uint8_t target_ID, _XL_320_GROUP * group, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len);
 //used to create a chained group of servo or a subgroup
 _XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t));
 //used to create a servo in a root group

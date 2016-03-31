@@ -19,6 +19,9 @@
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+#include "xl_320.h"
+
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>
@@ -28,17 +31,15 @@
 #include <libopencm3/stm32/exti.h>
 #include <libopencmsis/core_cm3.h>
 
-#include "xl_320.h"
+static void clock_setup(void)
+{
+  /* Enable GPIOD clock for LED & USARTs. */
+  rcc_periph_clock_enable(RCC_GPIOD);
+  rcc_periph_clock_enable(RCC_GPIOA);
 
- static void clock_setup(void)
- {
-   /* Enable GPIOD clock for LED & USARTs. */
-   rcc_periph_clock_enable(RCC_GPIOD);
-   rcc_periph_clock_enable(RCC_GPIOA);
-
-   /* Enable clocks for USART2. */
-   rcc_periph_clock_enable(RCC_USART2);
- }
+  /* Enable clocks for USART2. */
+  rcc_periph_clock_enable(RCC_USART2);
+}
 
 static void usart_setup(void)
 {
@@ -46,7 +47,7 @@ static void usart_setup(void)
   usart_set_baudrate(USART2, 1000000);
   usart_set_databits(USART2, 8);
   usart_set_stopbits(USART2, USART_STOPBITS_1);
-  usart_set_mode(USART2, USART_MODE_TX);
+  usart_set_mode(USART2, USART_MODE_TX_RX);
   usart_set_parity(USART2, USART_PARITY_NONE);
   usart_set_flow_control(USART2, USART_FLOWCONTROL_NONE);
 
@@ -65,7 +66,8 @@ static void gpio_setup(void)
   gpio_mode_setup(GPIOD, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO12);
 
   /* Setup GPIO pins for USART2 transmit. */
-  gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO2);
+  /* gpio_set_output_options(GPIOA, GPIO_OTYPE_OD, GPIO_OSPEED_25MHZ, GPIO2); */
+  gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO2);
 
   /* Setup USART2 TX pin as alternate function. */
   gpio_set_af(GPIOA, GPIO_AF7, GPIO2);
@@ -78,7 +80,7 @@ static void send(char* buff, uint8_t size) {
 
 void delay() {
   static volatile int i;
-  for (i = 0; i < 300000; i++) {        //* Wait a bit. *\/ */
+  for (i = 0; i < 3000000; i++) {        //* Wait a bit. *\/ */
     __asm__("NOP");
   }
 }
@@ -99,6 +101,12 @@ const struct rcc_clock_scale rcc_hse_8mhz_3v3_perf =
     .apb2_frequency = 60000000,
   };
 
+
+void setid(int id) {
+  _XL_320_GROUP group = create_servo_grp(&send);
+  _XL_320 servo = create_servo(BROADCAST_ID, &group);
+}  
+  
 int main(void)
 {
   volatile int i;
@@ -111,25 +119,21 @@ int main(void)
   usart_setup();
 
   _XL_320_GROUP group = create_servo_grp(&send);
-  _XL_320 servo = create_servo(1, &group);
+  _XL_320 servo1 = create_servo(1, &group);
+  _XL_320 servo2 = create_servo(2, &group);
+  _XL_320 servo3 = create_servo(3, &group);
 
   delay();
-  set_control_mode_servo(servo, JOIN, 1);
-  set_torque_servo(servo, 1050, 1);
-  delay();
 
+  _XL_320* servo = &servo1;
+  uint8_t cpt=0;
   while (1) {
+    cpt++;
     gpio_toggle(GPIOD, GPIO12);
-    set_led_color_servo(servo, LED_BLUE, 1);
-    set_angle_servo(servo, 0, 1);
+    set_led_color_servo(servo1, (cpt)%7, 1);
+    set_led_color_servo(servo2, (cpt+1)%7, 1);
+    set_led_color_servo(servo3, (cpt+2)%7, 1);
     delay();
-    set_led_color_servo(servo, LED_WHITE, 1);
-    set_angle_servo(servo, 512, 1);
-    delay();
-    set_led_color_servo(servo, LED_RED, 1);
-    set_angle_servo(servo, 1023, 1);
-    delay();
-
   }
   return 0;
 }
