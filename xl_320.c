@@ -70,8 +70,8 @@ static const uint8_t  field_len[NBR_FIELD]= {
 	[PUNCH]=2,
 };
 
-void send_frame(uint8_t target_ID, XL_320_group_t * group_ptr, XL_320_instruction_t instr, uint8_t * param, uint8_t param_len);
-unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
+static void send_frame(uint8_t target_ID, XL_320_group_t * group_ptr, XL_320_instruction_t instr, uint8_t * param, uint8_t param_len);
+static unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
 
 void init_servo_group(XL_320_group_t * group_ptr, void (*send_function)(char *,uint8_t))
 {
@@ -180,32 +180,32 @@ XL_320_frame_t build_frame(XL_320_instruction_t instruction, uint8_t device_id, 
 	return frame;
 }
 
-void pack_frame(XL_320_frame_t instruction, char * instr_buff, int max_len, uint8_t * instr_buff_len)
+void pack_frame(XL_320_frame_t frame, char * instr_buff, int max_len, uint8_t * instr_buff_len)
 {
-	if (max_len<7+instruction.len)
+	if (max_len<7+frame.len)
 	{
 		return;
 	}
-	instr_buff[0]=(char) instruction.H_BYTE3;
-	instr_buff[1]=(char) instruction.H_BYTE2;
-	instr_buff[2]=(char) instruction.H_BYTE1;
-	instr_buff[3]=(char) instruction.RES;
-	instr_buff[4]=(char) instruction.ID;
-	instr_buff[5]=(char) instruction.len_L;
-	instr_buff[6]=(char) instruction.len_H;
-	instr_buff[7]=(char) instruction.instr;
+	instr_buff[0]=(char) frame.H_BYTE3;
+	instr_buff[1]=(char) frame.H_BYTE2;
+	instr_buff[2]=(char) frame.H_BYTE1;
+	instr_buff[3]=(char) frame.RES;
+	instr_buff[4]=(char) frame.ID;
+	instr_buff[5]=(char) frame.len_L;
+	instr_buff[6]=(char) frame.len_H;
+	instr_buff[7]=(char) frame.instr;
 	int i;
-	for(i=0;i<instruction.len-3;i++)
+	for(i=0;i<frame.len-3;i++)
 	{
-		instr_buff[8+i]=instruction.param[i];
+		instr_buff[8+i]=frame.param[i];
 	}
 	//TODO : add byte stuffing
-	uint16_t crc=update_crc(0,(unsigned char*) instr_buff,5+instruction.len);
-	instruction.crc=crc;
-	instr_buff[5+instruction.len]=instruction.crc_L;
-	instr_buff[5+instruction.len+1]=instruction.crc_H;
+	uint16_t crc=update_crc(0,(unsigned char*) instr_buff,5+frame.len);
+	frame.crc=crc;
+	instr_buff[5+frame.len]=frame.crc_L;
+	instr_buff[5+frame.len+1]=frame.crc_H;
 
-	*instr_buff_len=7+instruction.len;
+	*instr_buff_len=7+frame.len;
 	
 	return;
 }
