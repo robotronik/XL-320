@@ -5,20 +5,20 @@
 #define BROADCAST_ID 0xFE
 
 typedef struct {
-	void (*SEND_FUNC)(char *,uint8_t);
-	uint8_t ID_LIST[253];
-	uint8_t LEN;
-} _XL_320_GROUP;
+	void (*send_function)(char *,uint8_t);
+	uint8_t ID_list[253];
+	uint8_t len;
+} XL_320_group_t;
 
 typedef struct {
-	_XL_320_GROUP * GROUP;
+	XL_320_group_t * group;
 	uint8_t ID;
-} _XL_320;
+} XL_320_servo_t;
 
 typedef struct{
 	union {
 		struct {
-			uint32_t HEADER;
+			uint32_t header;
 		};
 		struct {
 			uint8_t RES;
@@ -30,26 +30,25 @@ typedef struct{
 	uint8_t ID;
 	union {
 		struct {
-			uint16_t LEN;
+			uint16_t len;
 		};
 		struct {
-			uint8_t LEN_L;
-			uint8_t LEN_H;
+			uint8_t len_L;
+			uint8_t len_H;
 		};
 	};
-	uint8_t INSTR;
-	uint8_t * PARAM;
-	//uint8_t PARAM_LEN; usefull ?
+	uint8_t instr;
+	uint8_t * param;
 	union {
 		struct {
-			uint16_t CRC;
+			uint16_t crc;
 		};
 		struct {
-			uint8_t CRC_L;
-			uint8_t CRC_H;
+			uint8_t crc_L;
+			uint8_t crc_H;
 		};
 	};
-} _INSTR_FRAME;
+} XL_320_frame_t;
 
 //http://support.robotis.com/en/product/dynamixel/xl-320/xl-320.htm
 typedef enum {
@@ -85,7 +84,7 @@ typedef enum {
 	HDW_ERROR_STATUS,
 	PUNCH,
 	NBR_FIELD, //just to know the total number
-} _XL_320_FIELD;
+} XL_320_field_t;
 
 //http://support.robotis.com/en/product/dynamixel/xl-320/xl-320.htm#Actuator_Address_19
 typedef enum {
@@ -97,12 +96,12 @@ typedef enum {
 	LED_PINK=0b101,
 	LED_BLUE_GREEN=0b110,
 	LED_WHITE=0b111,
-} _LED_COLOR;
+} XL_320_led_color_t;
 
 typedef enum {
-	WHEEL=1,
-	JOIN=2,
-} _CONTROL_MODE;
+	WHEEL_MODE=1,
+	JOIN_MODE=2,
+} XL_320_control_mode_t;
 
 //http://support.robotis.com/en/product/dynamixel_pro/communication/instruction_status_packet.htm
 typedef enum {
@@ -118,37 +117,37 @@ typedef enum {
 	SYNC_WRITE=0x83,
 	BULK_READ=0x92,
 	BULK_WRITE=0x93,
-} _XL_320_INSTRUCTION;
+} XL_320_instruction_t;
 
 //used to initialize a group/subgroup of servos
-void init_servo_group(_XL_320_GROUP * group_ptr, void (*send_function)(char *,uint8_t));
+void init_servo_group(XL_320_group_t * group_ptr, void (*send_function)(char *,uint8_t));
 //used to initialize a servo and place it in a root group
-void init_servo(_XL_320 * servo_ptr, uint8_t ID, _XL_320_GROUP * root_group_ptr);
+void init_servo(XL_320_servo_t * servo_ptr, uint8_t ID, XL_320_group_t * root_group_ptr);
 //used to add a servo to a custom subgroup
-void add_servo_to_group(_XL_320 * servo_ptr, _XL_320_GROUP * group);
+void add_servo_to_group(XL_320_servo_t * servo_ptr, XL_320_group_t * group);
 
 
 //used for sending data to a entire group
-void send_data_group(_XL_320_GROUP * group, _XL_320_FIELD data_field, uint16_t value, uint8_t now);
+void send_data_group(XL_320_group_t * group, XL_320_field_t data_field, uint16_t value, uint8_t now);
 //used for sending data to a single servo
-void send_data_servo(_XL_320 * servo_ptr, _XL_320_FIELD data_field, uint16_t value, uint8_t now);
+void send_data_servo(XL_320_servo_t * servo_ptr, XL_320_field_t data_field, uint16_t value, uint8_t now);
 //used for performing all pending action (now=0), usefull to synchronize actions
-void launch_previous_action(_XL_320_GROUP * group);
+void launch_previous_action(XL_320_group_t * group);
 //used to set/change the led color
-void set_led_color_servo(_XL_320 * servo_ptr, _LED_COLOR color, uint8_t now);
+void set_led_color_servo(XL_320_servo_t * servo_ptr, XL_320_led_color_t color, uint8_t now);
 //used to change between WHEEL and JOIN mode (WHEEL = infinite rotation, JOIN = position control)
-void set_control_mode_servo(_XL_320 * servo_ptr, _CONTROL_MODE mode, uint8_t now);
+void set_control_mode_servo(XL_320_servo_t * servo_ptr, XL_320_control_mode_t mode, uint8_t now);
 //need to be in WHEEL mode, in JOIN mode the servo will reach the goal position at this speed rate
-void set_speed_servo(_XL_320 * servo_ptr, uint16_t speed, uint8_t now);
+void set_speed_servo(XL_320_servo_t * servo_ptr, uint16_t speed, uint8_t now);
 //need to be in JOIN mode, in WHEEL mode there is no effect
-void set_angle_servo(_XL_320 * servo_ptr, uint16_t angle, uint8_t now);
+void set_angle_servo(XL_320_servo_t * servo_ptr, uint16_t angle, uint8_t now);
 //used to set limit torque
-void set_torque_servo(_XL_320 * servo_ptr, uint16_t torque, uint8_t now);
+void set_torque_servo(XL_320_servo_t * servo_ptr, uint16_t torque, uint8_t now);
 //used to change the actual servo's ID
-void set_ID_servo(_XL_320 * servo_ptr, uint8_t new_ID);
+void set_ID_servo(XL_320_servo_t * servo_ptr, uint8_t new_ID);
 //required before switching to a different control mode (WHEEL/JOIN)
-void disable_power_servo(_XL_320 * servo_ptr, uint8_t now);
+void disable_power_servo(XL_320_servo_t * servo_ptr, uint8_t now);
 //used to re enable the servo after a disable
-void enable_power_servo(_XL_320 * servo_ptr, uint8_t now);
+void enable_power_servo(XL_320_servo_t * servo_ptr, uint8_t now);
 
 #endif	/* XL_320 */

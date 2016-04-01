@@ -14,9 +14,9 @@ void fake_send(char * buff, uint8_t buff_len)
 
 int main(void)
 {
-	_XL_320_GROUP my_servo_grp;
+	XL_320_group_t my_servo_grp;
 	init_servo_group(&my_servo_grp,&fake_send);
-	_XL_320 my_servo;
+	XL_320_servo_t my_servo;
 	init_servo(&my_servo,0x02,&my_servo_grp);
 	set_led_color_servo(&my_servo,LED_OFF,1);
 
