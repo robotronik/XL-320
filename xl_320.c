@@ -173,6 +173,17 @@ void disable_power_servo(_XL_320 * servo_ptr, uint8_t now)
 	send_data_servo(servo_ptr,TORQUE_ENABLE,0,now);
 }
 
+_INSTR_FRAME build_frame(_XL_320_INSTRUCTION instruction, uint8_t device_id, uint8_t * parameters, uint8_t parameters_length)
+{
+	_INSTR_FRAME frame;
+	frame.HEADER=XL_320_HEADER;
+	frame.ID=device_id;
+	frame.INSTR= (uint8_t) instruction;
+	frame.LEN=parameters_length+3;
+	frame.PARAM=parameters;
+	return frame;
+}
+
 void pack_frame(_INSTR_FRAME instruction, char * instr_buff, int max_len, uint8_t * instr_buff_len)
 {
 	if (max_len<7+instruction.LEN)
@@ -201,17 +212,6 @@ void pack_frame(_INSTR_FRAME instruction, char * instr_buff, int max_len, uint8_
 	*instr_buff_len=7+instruction.LEN;
 	
 	return;
-}
-
-_INSTR_FRAME build_frame(_XL_320_INSTRUCTION instruction, uint8_t device_id, uint8_t * parameters, uint8_t parameters_length)
-{
-	_INSTR_FRAME frame;
-	frame.HEADER=XL_320_HEADER;
-	frame.ID=device_id;
-	frame.INSTR= (uint8_t) instruction;
-	frame.LEN=parameters_length+3;
-	frame.PARAM=parameters;
-	return frame;
 }
 
 void send_frame(uint8_t target_ID, _XL_320_GROUP * group_ptr, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len)
