@@ -70,7 +70,7 @@ static const uint8_t  field_len[NBR_FIELD]= {
 	[PUNCH]=2,
 };
 
-void send_instruction_frame(uint8_t target_ID, _XL_320_GROUP * group_ptr, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len);
+void send_frame(uint8_t target_ID, _XL_320_GROUP * group_ptr, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len);
 unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
 
 _XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t))
@@ -104,11 +104,11 @@ void send_data_group(_XL_320_GROUP * group_ptr, _XL_320_FIELD data_field, uint16
 	{
 		if(now)
 		{
-			send_instruction_frame(group_ptr->ID_LIST[i],group_ptr,WRITE,param,field_len[data_field]+2);
+			send_frame(group_ptr->ID_LIST[i],group_ptr,WRITE,param,field_len[data_field]+2);
 		}
 		else
 		{
-			send_instruction_frame(group_ptr->ID_LIST[i],group_ptr,REG_WRITE,param,field_len[data_field]+2);
+			send_frame(group_ptr->ID_LIST[i],group_ptr,REG_WRITE,param,field_len[data_field]+2);
 		}
 	}
 }
@@ -118,17 +118,17 @@ void send_data_servo(_XL_320 * servo_ptr, _XL_320_FIELD data_field, uint16_t val
 	uint8_t param[]={field_addr[data_field],0x00, (uint8_t) value,(uint8_t) (value>>8)};
 	if(now)
 	{
-		send_instruction_frame(servo_ptr->ID,servo_ptr->GROUP,WRITE,param,field_len[data_field]+2);
+		send_frame(servo_ptr->ID,servo_ptr->GROUP,WRITE,param,field_len[data_field]+2);
 	}
 	else
 	{
-		send_instruction_frame(servo_ptr->ID,servo_ptr->GROUP,REG_WRITE,param,field_len[data_field]+2);
+		send_frame(servo_ptr->ID,servo_ptr->GROUP,REG_WRITE,param,field_len[data_field]+2);
 	}
 }
 
 void launch_previous_action(_XL_320_GROUP * group_ptr)
 {
-	send_instruction_frame(BROADCAST_ID,group_ptr,ACTION,0,0);
+	send_frame(BROADCAST_ID,group_ptr,ACTION,0,0);
 }
 
 //these functions could take sense if convertion is implemented
@@ -203,7 +203,7 @@ void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max
 	return;
 }
 
-_INSTR_FRAME build_instruction_frame(_XL_320_INSTRUCTION instruction, uint8_t device_id, uint8_t * parameters, uint8_t parameters_length)
+_INSTR_FRAME build_frame(_XL_320_INSTRUCTION instruction, uint8_t device_id, uint8_t * parameters, uint8_t parameters_length)
 {
 	_INSTR_FRAME frame;
 	frame.HEADER=XL_320_HEADER;
@@ -214,9 +214,9 @@ _INSTR_FRAME build_instruction_frame(_XL_320_INSTRUCTION instruction, uint8_t de
 	return frame;
 }
 
-void send_instruction_frame(uint8_t target_ID, _XL_320_GROUP * group_ptr, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len)
+void send_frame(uint8_t target_ID, _XL_320_GROUP * group_ptr, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len)
 {
-	_INSTR_FRAME frame=build_instruction_frame(instr, target_ID, param, param_len);
+	_INSTR_FRAME frame=build_frame(instr, target_ID, param, param_len);
 	uint8_t max_len=param_len+10+(param_len+2)/3;
 	char buff[max_len];
 	uint8_t final_len;
