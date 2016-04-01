@@ -125,30 +125,30 @@ _XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t));
 //used to create a servo in a root group
 _XL_320 create_servo(uint8_t ID, _XL_320_GROUP * root_group);
 //used to add a servo to a custom subgroup
-void add_servo_to_group(_XL_320 servo, _XL_320_GROUP * group);
+void add_servo_to_group(_XL_320 * servo, _XL_320_GROUP * group);
 
 
 //used for sending data to a entire group
-void set_data_group(_XL_320_GROUP group, _XL_320_FIELD data, uint16_t value, uint8_t now);
+void set_data_group(_XL_320_GROUP * group, _XL_320_FIELD data_field, uint16_t value, uint8_t now);
 //used for sending data to a single servo
-void set_data_servo(_XL_320 servo, _XL_320_FIELD data, uint16_t value, uint8_t now);
+void set_data_servo(_XL_320 * servo, _XL_320_FIELD data_field, uint16_t value, uint8_t now);
 //used for performing all pending action (now=0), usefull to synchronize actions
 void launch_previous_action(_XL_320_GROUP * group);
 //used to set/change the led color
-void set_led_color_servo(_XL_320 servo, _LED_COLOR color, uint8_t now);
+void set_led_color_servo(_XL_320 * servo, _LED_COLOR color, uint8_t now);
 //used to change between WHEEL and JOIN mode (WHEEL = infinite rotation, JOIN = position control)
-void set_control_mode_servo(_XL_320 servo, _CONTROL_MODE mode, uint8_t now);
+void set_control_mode_servo(_XL_320 * servo, _CONTROL_MODE mode, uint8_t now);
 //need to be in WHEEL mode, in JOIN mode the servo will reach the goal position at this speed rate
-void set_speed_servo(_XL_320 servo, uint16_t speed, uint8_t now);
+void set_speed_servo(_XL_320 * servo, uint16_t speed, uint8_t now);
 //need to be in JOIN mode, in WHEEL mode there is no effect
-void set_angle_servo(_XL_320 servo, uint16_t angle, uint8_t now);
+void set_angle_servo(_XL_320 * servo, uint16_t angle, uint8_t now);
 //used to set limit torque
-void set_torque_servo(_XL_320 servo, uint16_t torque, uint8_t now);
+void set_torque_servo(_XL_320 * servo, uint16_t torque, uint8_t now);
 //used to change the actual servo's ID
 void set_ID_servo(_XL_320 * servo, uint8_t new_ID);
 //required before switching to a different control mode (WHEEL/JOIN)
-void disable_power_servo(_XL_320 servo, uint8_t now);
+void disable_power_servo(_XL_320 * servo, uint8_t now);
 //used to re enable the servo after a disable
-void enable_power_servo(_XL_320 servo, uint8_t now);
+void enable_power_servo(_XL_320 * servo, uint8_t now);
 
 #endif	/* XL_320 */
