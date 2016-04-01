@@ -129,9 +129,9 @@ void add_servo_to_group(_XL_320 * servo_ptr, _XL_320_GROUP * group);
 
 
 //used for sending data to a entire group
-void set_data_group(_XL_320_GROUP * group, _XL_320_FIELD data_field, uint16_t value, uint8_t now);
+void send_data_group(_XL_320_GROUP * group, _XL_320_FIELD data_field, uint16_t value, uint8_t now);
 //used for sending data to a single servo
-void set_data_servo(_XL_320 * servo_ptr, _XL_320_FIELD data_field, uint16_t value, uint8_t now);
+void send_data_servo(_XL_320 * servo_ptr, _XL_320_FIELD data_field, uint16_t value, uint8_t now);
 //used for performing all pending action (now=0), usefull to synchronize actions
 void launch_previous_action(_XL_320_GROUP * group);
 //used to set/change the led color

@@ -96,7 +96,7 @@ void add_servo_to_group(_XL_320 * servo_ptr, _XL_320_GROUP * group_ptr)
 	group_ptr->LEN+=1;
 }
 
-void set_data_group(_XL_320_GROUP * group_ptr, _XL_320_FIELD data_field, uint16_t value, uint8_t now)
+void send_data_group(_XL_320_GROUP * group_ptr, _XL_320_FIELD data_field, uint16_t value, uint8_t now)
 {
 	uint8_t param[]={field_addr[data_field],0x00, (uint8_t) value,(uint8_t) (value>>8)};
 	int i;
@@ -113,7 +113,7 @@ void set_data_group(_XL_320_GROUP * group_ptr, _XL_320_FIELD data_field, uint16_
 	}
 }
 
-void set_data_servo(_XL_320 * servo_ptr, _XL_320_FIELD data_field, uint16_t value, uint8_t now)
+void send_data_servo(_XL_320 * servo_ptr, _XL_320_FIELD data_field, uint16_t value, uint8_t now)
 {
 	uint8_t param[]={field_addr[data_field],0x00, (uint8_t) value,(uint8_t) (value>>8)};
 	if(now)
@@ -134,43 +134,43 @@ void launch_previous_action(_XL_320_GROUP * group_ptr)
 //these functions could take sense if convertion is implemented
 void set_led_color_servo(_XL_320 * servo_ptr, _LED_COLOR color, uint8_t now)
 {
-	set_data_servo(servo_ptr,LED,color,now);
+	send_data_servo(servo_ptr,LED,color,now);
 }
 
 void set_control_mode_servo(_XL_320 * servo_ptr, _CONTROL_MODE mode, uint8_t now)
 {
-	set_data_servo(servo_ptr,CONTROL_MODE,mode,now);
+	send_data_servo(servo_ptr,CONTROL_MODE,mode,now);
 }
 
 void set_speed_servo(_XL_320 * servo_ptr, uint16_t speed, uint8_t now)
 {
-	set_data_servo(servo_ptr,GOAL_VELOCITY,speed,now);
+	send_data_servo(servo_ptr,GOAL_VELOCITY,speed,now);
 }
 
 void set_angle_servo(_XL_320 * servo_ptr, uint16_t angle, uint8_t now)
 {
-	set_data_servo(servo_ptr,GOAL_POSITION,angle,now);
+	send_data_servo(servo_ptr,GOAL_POSITION,angle,now);
 }
 
 void set_torque_servo(_XL_320 * servo_ptr, uint16_t torque, uint8_t now)
 {
-	set_data_servo(servo_ptr,GOAL_TORQUE,torque,now);
+	send_data_servo(servo_ptr,GOAL_TORQUE,torque,now);
 }
 
 void set_ID_servo(_XL_320 * servo_ptr, uint8_t new_ID)
 {
-	set_data_servo(servo_ptr,ID,new_ID,1);
+	send_data_servo(servo_ptr,ID,new_ID,1);
 	servo_ptr->ID=new_ID;
 }
 
 void enable_power_servo(_XL_320 * servo_ptr, uint8_t now)
 {
-	set_data_servo(servo_ptr,TORQUE_ENABLE,1,now);
+	send_data_servo(servo_ptr,TORQUE_ENABLE,1,now);
 }
 
 void disable_power_servo(_XL_320 * servo_ptr, uint8_t now)
 {
-	set_data_servo(servo_ptr,TORQUE_ENABLE,0,now);
+	send_data_servo(servo_ptr,TORQUE_ENABLE,0,now);
 }
 
 void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max_len, uint8_t * instr_buff_len)
