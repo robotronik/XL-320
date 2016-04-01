@@ -73,21 +73,17 @@ static const uint8_t  field_len[NBR_FIELD]= {
 void send_frame(uint8_t target_ID, _XL_320_GROUP * group_ptr, _XL_320_INSTRUCTION instr, uint8_t * param, uint8_t param_len);
 unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
 
-_XL_320_GROUP create_servo_grp(void (*send_function)(char *,uint8_t))
+void init_servo_group(_XL_320_GROUP * group_ptr, void (*send_function)(char *,uint8_t))
 {
-	_XL_320_GROUP group;
-	group.SEND_FUNC=send_function;
-	group.LEN=0;
-	return group;
+	group_ptr->SEND_FUNC=send_function;
+	group_ptr->LEN=0;
 }
 
-_XL_320 create_servo(uint8_t ID, _XL_320_GROUP * root_group_ptr)
+void init_servo(_XL_320 * servo_ptr, uint8_t ID, _XL_320_GROUP * root_group_ptr)
 {
-	_XL_320 servo;
-	servo.ID=ID;
-	servo.GROUP=root_group_ptr;
-	add_servo_to_group(&servo,root_group_ptr);
-	return servo;
+	servo_ptr->ID=ID;
+	servo_ptr->GROUP=root_group_ptr;
+	add_servo_to_group(servo_ptr,root_group_ptr);
 }
 
 void add_servo_to_group(_XL_320 * servo_ptr, _XL_320_GROUP * group_ptr)
