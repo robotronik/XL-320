@@ -173,7 +173,7 @@ void disable_power_servo(_XL_320 * servo_ptr, uint8_t now)
 	send_data_servo(servo_ptr,TORQUE_ENABLE,0,now);
 }
 
-void get_instruction_string(_INSTR_FRAME instruction, char * instr_buff, int max_len, uint8_t * instr_buff_len)
+void pack_frame(_INSTR_FRAME instruction, char * instr_buff, int max_len, uint8_t * instr_buff_len)
 {
 	if (max_len<7+instruction.LEN)
 	{
@@ -220,7 +220,7 @@ void send_frame(uint8_t target_ID, _XL_320_GROUP * group_ptr, _XL_320_INSTRUCTIO
 	uint8_t max_len=param_len+10+(param_len+2)/3;
 	char buff[max_len];
 	uint8_t final_len;
-	get_instruction_string(frame,buff,max_len,&final_len);
+	pack_frame(frame,buff,max_len,&final_len);
 	group_ptr->SEND_FUNC(buff,final_len);
 }
 
