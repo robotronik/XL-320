@@ -193,54 +193,51 @@ void disable_power_servo(XL_320_servo_t * servo_ptr, uint8_t now)
 	send_data_servo(servo_ptr,TORQUE_ENABLE,0,now);
 }
 
-XL_320_frame_t build_frame(XL_320_instruction_t instruction, uint8_t device_id, uint8_t * parameters, uint8_t parameters_length)
+void build_frame(XL_320_frame_t * frame, XL_320_instruction_t instruction, uint8_t device_id, uint8_t * parameters, uint8_t parameters_length)
 {
-	XL_320_frame_t frame;
-	frame.header=XL_320_HEADER;
-	frame.ID=device_id;
-	frame.instr= (uint8_t) instruction;
-	frame.len=parameters_length+3;
-	frame.param=parameters;
-	return frame;
+	frame->header=XL_320_HEADER;
+	frame->ID=device_id;
+	frame->instr= (uint8_t) instruction;
+	frame->len=parameters_length+3;
+	frame->param=parameters;
 }
 
-void pack_frame(XL_320_frame_t frame, char * instr_buff, int max_len, uint8_t * instr_buff_len)
+void pack_frame(XL_320_frame_t * frame, char * instr_buff, int max_len, uint8_t * instr_buff_len)
 {
-	if (max_len<7+frame.len)
+	if (max_len<7+frame->len)
 	{
 		return;
 	}
-	instr_buff[0]=(char) frame.H_BYTE3;
-	instr_buff[1]=(char) frame.H_BYTE2;
-	instr_buff[2]=(char) frame.H_BYTE1;
-	instr_buff[3]=(char) frame.RES;
-	instr_buff[4]=(char) frame.ID;
-	instr_buff[5]=(char) frame.len_L;
-	instr_buff[6]=(char) frame.len_H;
-	instr_buff[7]=(char) frame.instr;
+	instr_buff[0]=(char) frame->H_BYTE3;
+	instr_buff[1]=(char) frame->H_BYTE2;
+	instr_buff[2]=(char) frame->H_BYTE1;
+	instr_buff[3]=(char) frame->RES;
+	instr_buff[4]=(char) frame->ID;
+	instr_buff[5]=(char) frame->len_L;
+	instr_buff[6]=(char) frame->len_H;
+	instr_buff[7]=(char) frame->instr;
 	int i;
-	for(i=0;i<frame.len-3;i++)
+	for(i=0;i<frame->len-3;i++)
 	{
-		instr_buff[8+i]=frame.param[i];
+		instr_buff[8+i]=frame->param[i];
 	}
 	//TODO : add byte stuffing
-	uint16_t crc=update_crc(0,(unsigned char*) instr_buff,5+frame.len);
-	frame.crc=crc;
-	instr_buff[5+frame.len]=frame.crc_L;
-	instr_buff[5+frame.len+1]=frame.crc_H;
+	uint16_t crc=update_crc(0,(unsigned char*) instr_buff,5+frame->len);
+	frame->crc=crc;
+	instr_buff[5+frame->len]=frame->crc_L;
+	instr_buff[5+frame->len+1]=frame->crc_H;
 
-	*instr_buff_len=7+frame.len;
-	
-	return;
+	*instr_buff_len=7+frame->len;
 }
 
 void send_frame(uint8_t target_ID, XL_320_socket_t * socket_ptr, XL_320_instruction_t instr, uint8_t * param, uint8_t param_len)
 {
-	XL_320_frame_t frame=build_frame(instr, target_ID, param, param_len);
+	XL_320_frame_t frame;
+	build_frame(&frame, instr, target_ID, param, param_len);
 	uint8_t max_len=param_len+10+(param_len+2)/3;
 	char buff[max_len];
 	uint8_t final_len;
-	pack_frame(frame,buff,max_len,&final_len);
+	pack_frame(&frame, buff, max_len, &final_len);
 	socket_ptr->send_function(buff,final_len);
 }
 
