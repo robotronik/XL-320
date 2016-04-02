@@ -93,7 +93,7 @@ void init_servo(XL_320_servo_t * servo_ptr, uint8_t ID, XL_320_socket_t * socket
 
 void add_servo_to_group(XL_320_servo_t * servo_ptr, XL_320_group_t * group_ptr)
 {
-	group_ptr->ID_list[group_ptr->len]=servo_ptr->ID;
+	group_ptr->servo_list[group_ptr->len]=servo_ptr;
 	group_ptr->len+=1;
 }
 

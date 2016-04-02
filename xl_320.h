@@ -12,7 +12,7 @@ struct XL_320_servo_s {
 };
 
 struct XL_320_group_s {
-	struct XL_320_servo_s servo_list[253];
+	struct XL_320_servo_s * servo_list[253];
 	uint8_t len;
 };
 
