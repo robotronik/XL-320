@@ -124,10 +124,12 @@ typedef enum {
 	BULK_WRITE=0x93,
 } XL_320_instruction_t;
 
+//used to initialize a socket for a servo chain
+void init_socket(void (*send_function)(char *,uint8_t));
 //used to initialize a group/subgroup of servos
-void init_servo_group(XL_320_group_t * group_ptr, void (*send_function)(char *,uint8_t));
+void init_group(XL_320_group_t * group_ptr);
 //used to initialize a servo and place it in a root group
-void init_servo(XL_320_servo_t * servo_ptr, uint8_t ID, XL_320_group_t * root_group_ptr);
+void init_servo(XL_320_servo_t * servo_ptr, uint8_t ID, XL_320_socket_t * socket_ptr);
 //used to add a servo to a custom subgroup
 void add_servo_to_group(XL_320_servo_t * servo_ptr, XL_320_group_t * group);
 
