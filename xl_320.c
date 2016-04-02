@@ -81,7 +81,8 @@ void init_socket(XL_320_socket_t * socket_ptr, void (*send_function)(char *,uint
 
 void init_group(XL_320_group_t * group_ptr)
 {
-	group_ptr->len=0;
+	group_ptr->nbr_servo=0;
+	group_ptr->nbr_socket=0;
 }
 
 void init_servo(XL_320_servo_t * servo_ptr, uint8_t ID, XL_320_socket_t * socket_ptr)
@@ -93,14 +94,33 @@ void init_servo(XL_320_servo_t * servo_ptr, uint8_t ID, XL_320_socket_t * socket
 
 void add_servo_to_group(XL_320_servo_t * servo_ptr, XL_320_group_t * group_ptr)
 {
-	group_ptr->servo_ptr_list[group_ptr->len]=servo_ptr;
-	group_ptr->len+=1;
+	group_ptr->servo_ptr_list[group_ptr->nbr_servo]=servo_ptr;
+	group_ptr->nbr_servo+=1;
+	if(group_ptr->nbr_socket==0)
+	{
+		group_ptr->socket_ptr_list[0]=servo_ptr->socket_ptr;
+		group_ptr->nbr_socket=1;
+		return;
+	}
+	int socket_is_known=0;
+	XL_320_socket_t * socket_ptr_to_add = servo_ptr->socket_ptr;
+	uint8_t len_socket_list = group_ptr->nbr_socket;
+	int i;
+	for(i=0;i<len_socket_list && !socket_is_known;i++)
+	{
+		socket_is_known=(group_ptr->socket_ptr_list[i]==socket_ptr_to_add);
+	}
+	if(!socket_is_known)
+	{
+		group_ptr->socket_ptr_list[len_socket_list]=socket_ptr_to_add;
+		group_ptr->nbr_socket+=1;
+	}
 }
 
 void send_data_group(XL_320_group_t * group_ptr, XL_320_field_t data_field, uint16_t value, uint8_t now)
 {
 	int i;
-	for(i=0;i<group_ptr->len;i++)
+	for(i=0;i<group_ptr->nbr_servo;i++)
 	{
 		XL_320_servo_t * servo_ptr=group_ptr->servo_ptr_list[i];
 		send_data_servo(servo_ptr,data_field,value,now);
@@ -124,7 +144,11 @@ void send_data_servo(XL_320_servo_t * servo_ptr, XL_320_field_t data_field, uint
 
 void launch_previous_action(XL_320_group_t * group_ptr)
 {
-	send_frame(BROADCAST_ID,group_ptr,ACTION,0,0);
+	int i;
+	for(i=0;i<group_ptr->nbr_socket;i++)
+	{
+		send_frame(BROADCAST_ID,group_ptr->socket_ptr_list[i],ACTION,0,0);
+	}
 }
 
 //these functions could take sense if convertion is implemented
