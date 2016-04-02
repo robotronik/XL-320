@@ -7,12 +7,12 @@
 struct XL_320_socket_s;
 
 struct XL_320_servo_s {
-	struct XL_320_socket_s * socket;
+	struct XL_320_socket_s * socket_ptr;
 	uint8_t ID;
 };
 
 struct XL_320_group_s {
-	struct XL_320_servo_s * servo_list[253];
+	struct XL_320_servo_s * servo_ptr_list[253];
 	uint8_t len;
 };
 
