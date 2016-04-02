@@ -73,17 +73,22 @@ static const uint8_t  field_len[NBR_FIELD]= {
 static void send_frame(uint8_t target_ID, XL_320_group_t * group_ptr, XL_320_instruction_t instr, uint8_t * param, uint8_t param_len);
 static unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
 
-void init_servo_group(XL_320_group_t * group_ptr, void (*send_function)(char *,uint8_t))
+void init_socket(XL_320_socket_t * socket_ptr, void (*send_function)(char *,uint8_t))
 {
-	group_ptr->send_function=send_function;
+	socket_ptr->send_function=send_function;
+	init_group(&(socket_ptr->group));
+}
+
+void init_group(XL_320_group_t * group_ptr)
+{
 	group_ptr->len=0;
 }
 
-void init_servo(XL_320_servo_t * servo_ptr, uint8_t ID, XL_320_group_t * root_group_ptr)
+void init_servo(XL_320_servo_t * servo_ptr, uint8_t ID, XL_320_socket_t * socket_ptr)
 {
 	servo_ptr->ID=ID;
-	servo_ptr->group=root_group_ptr;
-	add_servo_to_group(servo_ptr,root_group_ptr);
+	servo_ptr->socket=socket_ptr;
+	add_servo_to_group(servo_ptr,&(socket_ptr->group));
 }
 
 void add_servo_to_group(XL_320_servo_t * servo_ptr, XL_320_group_t * group_ptr)
