@@ -4,14 +4,19 @@
 #define XL_320_HEADER 0xFFFFFD00
 #define BROADCAST_ID 0xFE
 
+
 typedef struct {
 	void (*send_function)(char *,uint8_t);
-	uint8_t ID_list[253];
+	XL_320_group_t group;
+} XL_320_socket_t;
+
+typedef struct {
+	XL_320_servo_t servo_list[253];
 	uint8_t len;
 } XL_320_group_t;
 
 typedef struct {
-	XL_320_group_t * group;
+	XL_320_socket_t * socket;
 	uint8_t ID;
 } XL_320_servo_t;
 
