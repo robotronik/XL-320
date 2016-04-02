@@ -130,7 +130,7 @@ typedef enum {
 } XL_320_instruction_t;
 
 //used to initialize a socket for a servo chain
-void init_socket(void (*send_function)(char *,uint8_t));
+void init_socket(XL_320_socket_t * socket_ptr, void (*send_function)(char *,uint8_t));
 //used to initialize a group/subgroup of servos
 void init_group(XL_320_group_t * group_ptr);
 //used to initialize a servo and place it in a root group
