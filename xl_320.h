@@ -4,16 +4,28 @@
 #define XL_320_HEADER 0xFFFFFD00
 #define BROADCAST_ID 0xFE
 
-typedef struct {
-	void (*send_function)(char *,uint8_t);
-	uint8_t ID_list[253];
-	uint8_t len;
-} XL_320_group_t;
+struct XL_320_socket_s;
 
-typedef struct {
-	XL_320_group_t * group;
+struct XL_320_servo_s {
+	struct XL_320_socket_s * socket_ptr;
 	uint8_t ID;
-} XL_320_servo_t;
+};
+
+struct XL_320_group_s {
+	struct XL_320_socket_s * socket_ptr_list[253];
+	uint8_t nbr_socket;
+	struct XL_320_servo_s * servo_ptr_list[253];
+	uint8_t nbr_servo;
+};
+
+struct XL_320_socket_s {
+	void (*send_function)(char *,uint8_t);
+	struct XL_320_group_s group;
+};
+
+typedef struct XL_320_servo_s XL_320_servo_t;
+typedef struct XL_320_group_s XL_320_group_t;
+typedef struct XL_320_socket_s XL_320_socket_t;
 
 typedef struct{
 	union {
@@ -119,10 +131,12 @@ typedef enum {
 	BULK_WRITE=0x93,
 } XL_320_instruction_t;
 
+//used to initialize a socket for a servo chain
+void init_socket(XL_320_socket_t * socket_ptr, void (*send_function)(char *,uint8_t));
 //used to initialize a group/subgroup of servos
-void init_servo_group(XL_320_group_t * group_ptr, void (*send_function)(char *,uint8_t));
+void init_group(XL_320_group_t * group_ptr);
 //used to initialize a servo and place it in a root group
-void init_servo(XL_320_servo_t * servo_ptr, uint8_t ID, XL_320_group_t * root_group_ptr);
+void init_servo(XL_320_servo_t * servo_ptr, uint8_t ID, XL_320_socket_t * socket_ptr);
 //used to add a servo to a custom subgroup
 void add_servo_to_group(XL_320_servo_t * servo_ptr, XL_320_group_t * group);
 
@@ -132,6 +146,7 @@ void send_data_group(XL_320_group_t * group, XL_320_field_t data_field, uint16_t
 //used for sending data to a single servo
 void send_data_servo(XL_320_servo_t * servo_ptr, XL_320_field_t data_field, uint16_t value, uint8_t now);
 //used for performing all pending action (now=0), usefull to synchronize actions
+// /!\ if servos are not connected to the same socket, synchronization is not guaranteed
 void launch_previous_action(XL_320_group_t * group);
 //used to set/change the led color
 void set_led_color_servo(XL_320_servo_t * servo_ptr, XL_320_led_color_t color, uint8_t now);

@@ -70,61 +70,85 @@ static const uint8_t  field_len[NBR_FIELD]= {
 	[PUNCH]=2,
 };
 
-static void send_frame(uint8_t target_ID, XL_320_group_t * group_ptr, XL_320_instruction_t instr, uint8_t * param, uint8_t param_len);
+static void send_frame(uint8_t target_ID, XL_320_socket_t * socket_ptr, XL_320_instruction_t instr, uint8_t * param, uint8_t param_len);
 static unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr, unsigned short data_blk_size);
 
-void init_servo_group(XL_320_group_t * group_ptr, void (*send_function)(char *,uint8_t))
+void init_socket(XL_320_socket_t * socket_ptr, void (*send_function)(char *,uint8_t))
 {
-	group_ptr->send_function=send_function;
-	group_ptr->len=0;
+	socket_ptr->send_function=send_function;
+	init_group(&(socket_ptr->group));
 }
 
-void init_servo(XL_320_servo_t * servo_ptr, uint8_t ID, XL_320_group_t * root_group_ptr)
+void init_group(XL_320_group_t * group_ptr)
+{
+	group_ptr->nbr_servo=0;
+	group_ptr->nbr_socket=0;
+}
+
+void init_servo(XL_320_servo_t * servo_ptr, uint8_t ID, XL_320_socket_t * socket_ptr)
 {
 	servo_ptr->ID=ID;
-	servo_ptr->group=root_group_ptr;
-	add_servo_to_group(servo_ptr,root_group_ptr);
+	servo_ptr->socket_ptr=socket_ptr;
+	add_servo_to_group(servo_ptr,&(socket_ptr->group));
 }
 
 void add_servo_to_group(XL_320_servo_t * servo_ptr, XL_320_group_t * group_ptr)
 {
-	group_ptr->ID_list[group_ptr->len]=servo_ptr->ID;
-	group_ptr->len+=1;
+	group_ptr->servo_ptr_list[group_ptr->nbr_servo]=servo_ptr;
+	group_ptr->nbr_servo+=1;
+	if(group_ptr->nbr_socket==0)
+	{
+		group_ptr->socket_ptr_list[0]=servo_ptr->socket_ptr;
+		group_ptr->nbr_socket=1;
+		return;
+	}
+	int socket_is_known=0;
+	XL_320_socket_t * socket_ptr_to_add = servo_ptr->socket_ptr;
+	uint8_t len_socket_list = group_ptr->nbr_socket;
+	int i;
+	for(i=0;i<len_socket_list && !socket_is_known;i++)
+	{
+		socket_is_known=(group_ptr->socket_ptr_list[i]==socket_ptr_to_add);
+	}
+	if(!socket_is_known)
+	{
+		group_ptr->socket_ptr_list[len_socket_list]=socket_ptr_to_add;
+		group_ptr->nbr_socket+=1;
+	}
 }
 
 void send_data_group(XL_320_group_t * group_ptr, XL_320_field_t data_field, uint16_t value, uint8_t now)
 {
-	uint8_t param[]={field_addr[data_field],0x00, (uint8_t) value,(uint8_t) (value>>8)};
 	int i;
-	for(i=0;i<group_ptr->len;i++)
+	for(i=0;i<group_ptr->nbr_servo;i++)
 	{
-		if(now)
-		{
-			send_frame(group_ptr->ID_list[i],group_ptr,WRITE,param,field_len[data_field]+2);
-		}
-		else
-		{
-			send_frame(group_ptr->ID_list[i],group_ptr,REG_WRITE,param,field_len[data_field]+2);
-		}
+		XL_320_servo_t * servo_ptr=group_ptr->servo_ptr_list[i];
+		send_data_servo(servo_ptr,data_field,value,now);
 	}
 }
 
 void send_data_servo(XL_320_servo_t * servo_ptr, XL_320_field_t data_field, uint16_t value, uint8_t now)
 {
 	uint8_t param[]={field_addr[data_field],0x00, (uint8_t) value,(uint8_t) (value>>8)};
+	uint8_t ID=servo_ptr->ID;
+	XL_320_socket_t * socket_ptr=servo_ptr->socket_ptr;
 	if(now)
 	{
-		send_frame(servo_ptr->ID,servo_ptr->group,WRITE,param,field_len[data_field]+2);
+		send_frame(ID,socket_ptr,WRITE,param,field_len[data_field]+2);
 	}
 	else
 	{
-		send_frame(servo_ptr->ID,servo_ptr->group,REG_WRITE,param,field_len[data_field]+2);
+		send_frame(ID,socket_ptr,REG_WRITE,param,field_len[data_field]+2);
 	}
 }
 
 void launch_previous_action(XL_320_group_t * group_ptr)
 {
-	send_frame(BROADCAST_ID,group_ptr,ACTION,0,0);
+	int i;
+	for(i=0;i<group_ptr->nbr_socket;i++)
+	{
+		send_frame(BROADCAST_ID,group_ptr->socket_ptr_list[i],ACTION,0,0);
+	}
 }
 
 //these functions could take sense if convertion is implemented
@@ -210,14 +234,14 @@ void pack_frame(XL_320_frame_t frame, char * instr_buff, int max_len, uint8_t * 
 	return;
 }
 
-void send_frame(uint8_t target_ID, XL_320_group_t * group_ptr, XL_320_instruction_t instr, uint8_t * param, uint8_t param_len)
+void send_frame(uint8_t target_ID, XL_320_socket_t * socket_ptr, XL_320_instruction_t instr, uint8_t * param, uint8_t param_len)
 {
 	XL_320_frame_t frame=build_frame(instr, target_ID, param, param_len);
 	uint8_t max_len=param_len+10+(param_len+2)/3;
 	char buff[max_len];
 	uint8_t final_len;
 	pack_frame(frame,buff,max_len,&final_len);
-	group_ptr->send_function(buff,final_len);
+	socket_ptr->send_function(buff,final_len);
 }
 
 //code from : http://support.robotis.com/en/product/dynamixel_pro/communication/crc.htm
