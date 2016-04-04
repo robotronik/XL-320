@@ -11,12 +11,12 @@ class IDTab(ttk.Frame):
 
 	def initialize(self):
 		self.grid()
-		self.IDValueSpinBox=tkinter.Spinbox(self,from_=0,to=253)
+		self.IDValueSpinBox=tkinter.Spinbox(self,from_=0,to=252)
 		self.IDValueSpinBox.grid(column=0,row=0)
 		buttonNewSendID=ttk.Button(self,text='Send new ID',command=self.OnButtonClick_SendID)
 		buttonNewSendID.grid(column=0,row=1)
 
 	def OnButtonClick_SendID(self):
-		new_ID=self.IDValueSpinBox.get()
-		self.parent.lib.set_ID_servo(byref(self.parent.servo),c_uint(int(new_ID)),c_uint(1))
+		new_ID=int(self.IDValueSpinBox.get())
+		self.parent.lib.set_ID_servo(byref(self.parent.servo),c_uint(new_ID),c_uint(1))
 		print(self.IDValueSpinBox.get())
