@@ -53,7 +53,7 @@ class FrameGenerationZone(ttk.Frame):
 		print(self.socket.send_function)
 		self.servo=XL_320_servo()
 		#254 correspond to broadcast ID
-		self.lib.init_servo(byref(self.servo),254,byref(self.socket))
+		self.lib.init_servo(byref(self.servo),c_uint(254),byref(self.socket))
 		print(self.socket.group.nbr_servo)
 		self.initialize()
 

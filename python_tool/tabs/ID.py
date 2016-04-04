@@ -17,5 +17,6 @@ class IDTab(ttk.Frame):
 		buttonNewSendID.grid(column=0,row=1)
 
 	def OnButtonClick_SendID(self):
-		#self.parent.lib.
+		new_ID=self.IDValueSpinBox.get()
+		self.parent.lib.set_ID_servo(byref(self.parent.servo),c_uint(int(new_ID)),c_uint(1))
 		print(self.IDValueSpinBox.get())
