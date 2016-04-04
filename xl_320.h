@@ -3,6 +3,9 @@
 
 #define XL_320_HEADER 0xFFFFFD00
 #define BROADCAST_ID 0xFE
+//maximum number of servo on a single socket : 253 (ID range : 0 to 252)
+#define NBR_MAX_SERVO 10
+#define NBR_MAX_SOCKET 5
 
 struct XL_320_socket_s;
 
@@ -12,9 +15,9 @@ struct XL_320_servo_s {
 };
 
 struct XL_320_group_s {
-	struct XL_320_socket_s * socket_ptr_list[253];
+	struct XL_320_socket_s * socket_ptr_list[NBR_MAX_SOCKET];
 	uint8_t nbr_socket;
-	struct XL_320_servo_s * servo_ptr_list[253];
+	struct XL_320_servo_s * servo_ptr_list[NBR_MAX_SERVO];
 	uint8_t nbr_servo;
 };
 
