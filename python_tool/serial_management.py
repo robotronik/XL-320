@@ -95,11 +95,17 @@ class SerialFrame(ttk.Frame):
 			baudrate=self.list_baudrate.get()
 			self.parent.serial.set_parameters(port,baudrate)
 			self.parent.serial.connect()
-			self.buttonToggleConnect.config(text='Connect')
 		else:
 			self.parent.serial.disconnect()
-			self.buttonToggleConnect.config(text='Disconnect')
+
+		# state actualisation
 		self.connected=self.parent.serial.is_connected()
+
+		# text changement if everything is ok
+		if(self.connected):
+			self.buttonToggleConnect.config(text='Disconnect')
+		else:
+			self.buttonToggleConnect.config(text='Connect')
 
 	def OnButtonClick_Refresh(self):
 		self.refresh_ports()
