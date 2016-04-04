@@ -11,11 +11,11 @@ class PositionTab(ttk.Frame):
 
 	def initialize(self):
 		self.grid()
-		self.IDValueSpinBox=tkinter.Spinbox(self,from_=0,to=1023)
-		self.IDValueSpinBox.grid(column=0,row=0)
+		self.positionValueSpinBox=tkinter.Spinbox(self,from_=0,to=1023)
+		self.positionValueSpinBox.grid(column=0,row=0)
 		buttonSend=ttk.Button(self,text='Set Position',command=self.OnButtonClick_Send)
 		buttonSend.grid(column=0,row=1)
 
 	def OnButtonClick_Send(self):
-		libxl320=cdll.LoadLibrary("./libxl320.so")
-		print(self.IDValueSpinBox.get())
+		position=int(self.positionValueSpinBox.get())
+		self.parent.lib.set_angle_servo(byref(self.parent.servo),c_uint(position),c_uint(1))
