@@ -31,5 +31,5 @@ class LEDColorTab(ttk.Frame):
 
 	def OnButtonClick_Send(self):
 		color=self.color_values[self.choice_list.get()]
-		self.parent.lib.set_led_color_servo(byref(self.parent.servo),c_uint(color),1)
+		self.parent.lib.set_led_color_servo(byref(self.parent.servo),c_uint(color),c_uint(1))
 		pass
