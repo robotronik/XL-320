@@ -11,11 +11,11 @@ class SpeedTab(ttk.Frame):
 
 	def initialize(self):
 		self.grid()
-		self.IDValueSpinBox=tkinter.Spinbox(self,from_=0,to=1023)
-		self.IDValueSpinBox.grid(column=0,row=0)
+		self.speedValueSpinBox=tkinter.Spinbox(self,from_=0,to=1023)
+		self.speedValueSpinBox.grid(column=0,row=0)
 		buttonSend=ttk.Button(self,text='Set Speed',command=self.OnButtonClick_Send)
 		buttonSend.grid(column=0,row=1)
 
 	def OnButtonClick_Send(self):
-		libxl320=cdll.LoadLibrary("./libxl320.so")
-		print(self.IDValueSpinBox.get())
+		speed=int(self.speedValueSpinBox.get())
+		self.parent.lib.set_speed_servo(byref(self.parent.servo),c_uint(speed),c_uint(1))
