@@ -236,7 +236,7 @@ void send_frame(uint8_t target_ID, XL_320_socket_t * socket_ptr, XL_320_instruct
 	build_frame(&frame, instr, target_ID, param, param_len);
 	uint8_t max_len=param_len+10+(param_len+2)/3;
 	char buff[max_len];
-	uint8_t final_len;
+	uint8_t final_len = 0;
 	pack_frame(&frame, buff, max_len, &final_len);
 	socket_ptr->send_function(buff,final_len);
 }
@@ -283,7 +283,7 @@ unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr,
 	{
 		i = ((unsigned short)(crc_accum >> 8) ^ data_blk_ptr[j]) & 0xFF;
 		crc_accum = (crc_accum << 8) ^ crc_table[i];
-	} 
+	}
 
 	return crc_accum;
 }
